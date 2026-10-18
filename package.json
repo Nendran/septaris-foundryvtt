@@ -1,0 +1,18 @@
+{
+  "name": "septaris",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Système FoundryVTT pour le JDR Septaris.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Septaris",
+    "FoundryVTT"
+  ],
+  "author": "Vilsafur",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15"
+  }
+}

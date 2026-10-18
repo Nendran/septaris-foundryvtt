@@ -1,0 +1,46 @@
+{
+  "id": "septaris",
+  "title": "Septaris",
+  "description": "Système FoundryVTT pour le JDR Septaris.",
+  "version": "0.0.1",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14",
+    "maximum": "14"
+  },
+  "authors": [
+    {
+      "name": "Vilsafur",
+      "discord": "https://discord.gg/ktrC2fc9FZ"
+    }
+  ],
+  "socket": true,
+  "esmodules": ["scripts/septaris.mjs"],
+  "styles": ["styles/septaris.css"],
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
+  ],
+  "initiative": "1d20 + @abilities.dex.mod",
+  "grid": {
+    "distance": 1,
+    "units": "m",
+    "type": 1,
+    "diagonals": 0
+  },
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "label": "SEPTARIS.Sheet.Character",
+        "htmlFields": [
+          "background.description"
+        ]
+      }
+    },
+    "Item": {}
+  },
+  "packs": []
+}
