@@ -35,9 +35,7 @@
     "Actor": {
       "character": {
         "label": "SEPTARIS.Sheet.Character",
-        "htmlFields": [
-          "background.biography"
-        ]
+        "htmlFields": ["background.biography"]
       }
     },
     "Item": {}

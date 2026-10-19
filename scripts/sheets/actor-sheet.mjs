@@ -3,15 +3,20 @@
  * @extends {ActorSheet}
  */
 export class SeptarisActorSheet extends ActorSheet {
-
   /** @override */
   static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(ActorSheet.defaultOptions, {
       classes: ["septaris", "sheet", "actor"],
       template: "systems/septaris/templates/actor/actor-sheet.hbs",
       width: 600,
       height: 600,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
+      tabs: [
+        {
+          navSelector: ".sheet-tabs",
+          contentSelector: ".sheet-body",
+          initial: "features",
+        },
+      ],
     });
   }
 
