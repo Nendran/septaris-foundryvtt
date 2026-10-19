@@ -1,0 +1,49 @@
+<section class="flexcol" autocomplete="off">
+
+  {{! Sheet Header }}
+  <header class="sheet-header">
+    {{! Header stuff goes here }}
+    <img
+      class="profile-img"
+      src="{{actor.thumbnail}}"
+      data-edit="img"
+      title="{{actor.name}}"
+      height="100"
+      width="100"
+    />
+    <div class="header-fields">
+      <h1 class="charname"><input
+          name="name"
+          type="text"
+          value="{{actor.name}}"
+          placeholder="Name"
+        /></h1>
+      <div class="resources grid grid-2col">{{! resources here }}</div>
+      <div class="abilities grid grid-3col">{{! abilities here }}</div>
+    </div>
+  </header>
+
+  {{! Sheet Tab Navigation }}
+  <nav class="sheet-tabs tabs" role="tablist" data-group="primary">
+    {{#each tabs as |tab|}}
+    <a class="dg-tab {{tab.cssClass}}" role="tab"
+      id="{{../tabFieldId}}-tab-{{tab.id}}" data-action="tab" data-group="{{tab.group}}" data-tab="{{tab.id}}"
+      aria-controls="{{../tabFieldId}}-panel-{{tab.id}}" aria-selected="{{tab.active}}"
+      tabindex="{{#if tab.active}}0{{else}}-1{{/if}}">{{tab.label}}</a>
+  {{/each}}
+  </nav>
+
+  {{! Sheet Body }}
+  <section class="sheet-body">
+
+    {{! Biography Tab }}
+    <div class="tab biography {{tabs.description.cssClass}}" data-group="primary" data-tab="description" role="tabpanel">
+      Description here
+    </div>
+
+    {{! Owned Items Tab }}
+    <div class="tab items {{tabs.items.cssClass}}" data-group="primary" data-tab="items" role="tabpanel">
+      actor items here
+    </div>
+  </section>
+</section>
