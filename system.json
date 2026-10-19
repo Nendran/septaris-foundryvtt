@@ -16,7 +16,7 @@
   ],
   "socket": true,
   "esmodules": ["scripts/septaris.mjs"],
-  "styles": ["styles/septaris.css"],
+  "styles": ["styles/septaris.css", "styles/fonts.css"],
   "languages": [
     {
       "lang": "fr",
