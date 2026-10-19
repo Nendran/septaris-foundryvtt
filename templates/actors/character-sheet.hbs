@@ -2,7 +2,6 @@
 
   {{! Sheet Header }}
   <header class="sheet-header">
-    {{! Header stuff goes here }}
     <img
       class="profile-img"
       src="{{actor.thumbnail}}"
@@ -11,17 +10,51 @@
       height="100"
       width="100"
     />
-    <div class="header-fields">
-      <h1 class="charname"><input
-          name="name"
-          type="text"
-          value="{{actor.name}}"
-          placeholder="Name"
-        /></h1>
-      <div class="resources grid grid-2col">{{! resources here }}</div>
-      <div class="abilities grid grid-3col">{{! abilities here }}</div>
+    <div>
+      <div>Nom : {{actor.name}}</div>
+      <div>Origine: {{system.origin}}</div>
+    </div>
+    <div>
+      <div>Niveau: {{system.level}}</div>
+      <div>PE: {{system.pe}}</div>
     </div>
   </header>
+
+  <section class="sheet-stats">
+    <span title="Points de Vie">♥: {{system.health.value}}/{{system.health.max}}</span>
+    <span title="Défense">🛡: {{system.defense}}</span>
+    <span title="Prouesse">🎲: 1D{{system.featDice}}</span>
+    <span title="Vitesse">🏃: {{system.speed}}</span>
+  </section>
+
+  <hr />
+
+  <section class="sheet-skills">
+    <div class="sheet-skills-skill">
+      <span>Force: {{system.skills.strength}}</span>
+      <span>{{system.skillsModifiers.strength}}</span>
+    </div>
+    <div class="sheet-skills-skill">
+      <span>Dextérité: {{system.skills.dexterity}}</span>
+      <span>{{system.skillsModifiers.dexterity}}</span>
+    </div>
+    <div class="sheet-skills-skill">
+      <span>Constitution: {{system.skills.constitution}}</span>
+      <span>{{system.skillsModifiers.constitution}}</span>
+    </div>
+    <div class="sheet-skills-skill">
+      <span>Intelligence: {{system.skills.intelligence}}</span>
+      <span>{{system.skillsModifiers.intelligence}}</span>
+    </div>
+    <div class="sheet-skills-skill">
+      <span>Instinct: {{system.skills.instinct}}</span>
+      <span>{{system.skillsModifiers.instinct}}</span>
+    </div>
+    <div class="sheet-skills-skill">
+      <span>Charisme: {{system.skills.charisma}}</span>
+      <span>{{system.skillsModifiers.charisma}}</span>
+    </div>
+  </section>
 
   {{! Sheet Tab Navigation }}
   <nav class="sheet-tabs tabs" role="tablist" data-group="primary">
@@ -37,13 +70,27 @@
   <section class="sheet-body">
 
     {{! Biography Tab }}
-    <div class="tab biography {{tabs.description.cssClass}}" data-group="primary" data-tab="description" role="tabpanel">
+    <div class="tab biography {{tabs.resume.cssClass}}" data-group="primary" data-tab="resume" role="tabpanel">
       Description here
     </div>
 
     {{! Owned Items Tab }}
-    <div class="tab items {{tabs.items.cssClass}}" data-group="primary" data-tab="items" role="tabpanel">
-      actor items here
+    <div class="tab items {{tabs.actions.cssClass}}" data-group="primary" data-tab="actions" role="tabpanel">
+      actions items here
+    </div>
+
+    {{! Owned Items Tab }}
+    <div class="tab items {{tabs.abilities.cssClass}}" data-group="primary" data-tab="abilities" role="tabpanel">
+      abilities items here
+    </div>
+
+    {{! Owned Items Tab }}
+    <div class="tab items {{tabs.inventory.cssClass}}" data-group="primary" data-tab="inventory" role="tabpanel">
+      inventory items here
+    </div>
+    {{! Owned Items Tab }}
+    <div class="tab items {{tabs.notes.cssClass}}" data-group="primary" data-tab="notes" role="tabpanel">
+      notes items here
     </div>
   </section>
 </section>

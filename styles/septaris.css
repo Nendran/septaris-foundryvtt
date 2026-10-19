@@ -2,3 +2,31 @@
   --font-title: "EB Garamond", serif;
   --font-body: "Inter", sans-serif;
 }
+
+
+.sheet.septaris.actor header.sheet-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sheet.septaris.actor .sheet-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sheet.septaris.actor .sheet-skills {
+  display: flex;
+  justify-content: space-between;
+
+  & div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &:has(+ div) {
+      border-right: 2px solid var(--color-border);
+      padding: 1rem;
+    }
+  }
+}

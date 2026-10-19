@@ -11,7 +11,7 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["septaris", "sheet", "actor"],
-    width: 600,
+    width: 720,
     height: 600,
     form: {
       submitOnChange: true,
@@ -22,10 +22,13 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
 
   static TABS = {
     primary: {
-      initial: "description",
+      initial: "resume",
       tabs: [
-        { id: "description", label: "Description" },
-        { id: "items", label: "Items" },
+        { id: "resume", label: "Résumé" },
+        { id: "actions", label: "Actions" },
+        { id: "abilities", label: "Aptitudes" },
+        { id: "inventory", label: "Inventaire" },
+        { id: "notes", label: "Notes" },
       ],
     },
   };
@@ -37,6 +40,7 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.actor = this.document;
+    context.system = this.document.system;
 
     return context;
   }
