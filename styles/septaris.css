@@ -3,7 +3,6 @@
   --font-body: "Inter", sans-serif;
 }
 
-
 .sheet.septaris.actor header.sheet-header {
   display: flex;
   justify-content: space-between;
@@ -28,5 +27,17 @@
       border-right: 2px solid var(--color-border);
       padding: 1rem;
     }
+
+    & span {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.capacities {
+  & .capacities-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 175px);
   }
 }

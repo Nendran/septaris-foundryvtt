@@ -1,5 +1,4 @@
-const { HTMLField, SchemaField, NumberField } =
-  foundry.data.fields;
+const { HTMLField, SchemaField, NumberField } = foundry.data.fields;
 
 export class CharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -241,5 +240,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       instinct: Math.floor((this.skills.instinct - 10) / 2),
       charisma: Math.floor((this.skills.charisma - 10) / 2),
     };
+  }
+
+  updateCapacity(capacityKey) {
+    const currentProficiency = this.capacities[capacityKey];
+    if (currentProficiency < 3) {
+      this.capacities[capacityKey] = currentProficiency + 1;
+    } else {
+      this.capacities[capacityKey] = 1;
+    }
   }
 }

@@ -1,9 +1,11 @@
 import { CharacterData } from "./data/actor/character.mjs";
 import { SeptarisCharacterSheet } from "./sheets/character-sheet.mjs";
 import { SYSTEM_ID } from "./utils/constants.mjs";
+import { registerHandlebarsHelpers } from "./utils/handlebars.mjs";
 
 Hooks.once("init", () => {
   const ActorsCollection = foundry.documents.collections.Actors;
+  registerHandlebarsHelpers();
 
   CONFIG.Actor.dataModels.character = CharacterData;
 
@@ -19,5 +21,4 @@ Hooks.once("init", () => {
       value: ["xp"],
     },
   };
-  console.log(`${SYSTEM_ID} | register actor sheet`, SeptarisCharacterSheet);
 });

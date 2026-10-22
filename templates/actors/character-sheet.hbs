@@ -30,29 +30,29 @@
   <hr />
 
   <section class="sheet-skills">
-    <div class="sheet-skills-skill">
-      <span>Force: {{system.skills.strength}}</span>
-      <span>{{system.skillsModifiers.strength}}</span>
+    <div>
+      <span>Force: <input type="text" name="system.skills.strength" value="{{system.skills.strength}}" data-dtype="Number" /></span>
+      <span>{{numberFormat system.skillsModifiers.strength sign=true}}</span>
     </div>
-    <div class="sheet-skills-skill">
-      <span>Dextérité: {{system.skills.dexterity}}</span>
-      <span>{{system.skillsModifiers.dexterity}}</span>
+    <div>
+      <span>Dextérité: <input type="text" name="system.skills.dexterity" value="{{system.skills.dexterity}}" data-dtype="Number" /></span>
+      <span>{{numberFormat system.skillsModifiers.dexterity sign=true}}</span>
     </div>
-    <div class="sheet-skills-skill">
-      <span>Constitution: {{system.skills.constitution}}</span>
-      <span>{{system.skillsModifiers.constitution}}</span>
+    <div>
+      <span>Constitution: <input type="text" name="system.skills.constitution" value="{{system.skills.constitution}}" data-dtype="Number" /></span>
+      <span>{{numberFormat system.skillsModifiers.constitution sign=true}}</span>
     </div>
-    <div class="sheet-skills-skill">
-      <span>Intelligence: {{system.skills.intelligence}}</span>
-      <span>{{system.skillsModifiers.intelligence}}</span>
+    <div>
+      <span>Intelligence: <input type="text" name="system.skills.intelligence" value="{{system.skills.intelligence}}" data-dtype="Number" /></span>
+      <span>{{numberFormat system.skillsModifiers.intelligence sign=true}}</span>
     </div>
-    <div class="sheet-skills-skill">
-      <span>Instinct: {{system.skills.instinct}}</span>
-      <span>{{system.skillsModifiers.instinct}}</span>
+    <div>
+      <span>Instinct: <input type="text" name="system.skills.instinct" value="{{system.skills.instinct}}" data-dtype="Number" /></span>
+      <span>{{numberFormat system.skillsModifiers.instinct sign=true}}</span>
     </div>
-    <div class="sheet-skills-skill">
-      <span>Charisme: {{system.skills.charisma}}</span>
-      <span>{{system.skillsModifiers.charisma}}</span>
+    <div>
+      <span>Charisme: <input type="text" name="system.skills.charisma" value="{{system.skills.charisma}}" data-dtype="Number" /></span>
+      <span>{{numberFormat system.skillsModifiers.charisma sign=true}}</span>
     </div>
   </section>
 
@@ -71,7 +71,17 @@
 
     {{! Biography Tab }}
     <div class="tab biography {{tabs.resume.cssClass}}" data-group="primary" data-tab="resume" role="tabpanel">
-      Description here
+      <div class="capacities">
+        <h2>{{septarisLocalize "SEPTARIS.Sheet.Capacities"}}</h2>
+        <div class="capacities-list">
+          {{#each system.capacities as |proficiency name|}}
+            <div class="capacity" data-action="update-capacity" data-capacity="{{name}}">
+              <span title={{proficiencyName proficiency }}>
+                {{capacityProficiency proficiency}} {{capacityName name}}
+              </span>
+            </div>
+          {{/each}}
+      </div>
     </div>
 
     {{! Owned Items Tab }}

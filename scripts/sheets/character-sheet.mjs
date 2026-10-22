@@ -11,13 +11,15 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
   /** @override */
   static DEFAULT_OPTIONS = {
     classes: ["septaris", "sheet", "actor"],
-    width: 720,
-    height: 600,
+    position: {
+      width: 1020,
+      height: 720,
+    },
     form: {
       submitOnChange: true,
       closeOnSubmit: false,
     },
-    window: { resizable: true }
+    window: { resizable: true },
   };
 
   static TABS = {
@@ -34,7 +36,9 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
   };
 
   static PARTS = {
-    form: { template: `${SYSTEM_PATH}/templates/actors/character-sheet.hbs` },
+    form: {
+      template: `${SYSTEM_PATH}/templates/actors/character-sheet.hbs`,
+    },
   };
 
   async _prepareContext(options) {
@@ -43,5 +47,21 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
     context.system = this.document.system;
 
     return context;
+  }
+
+  _attachPartListeners(partId, htmlElement, options) {
+    super._attachPartListeners(partId, htmlElement, options);
+    if (partId !== "form") return;
+
+    htmlElement
+      .querySelectorAll("[data-action='update-capacity']")
+      .forEach((element) => {
+        element.addEventListener("click", (event) => {
+          event.preventDefault();
+          const capacityKey = element.dataset.capacity;
+          this.document.system.updateCapacity(capacityKey);
+          this.render();
+        });
+      });
   }
 }
