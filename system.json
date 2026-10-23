@@ -18,13 +18,8 @@
     }
   ],
   "socket": true,
-  "esmodules": [
-    "scripts/septaris.mjs"
-  ],
-  "styles": [
-    "styles/septaris.css",
-    "styles/fonts.css"
-  ],
+  "esmodules": ["scripts/septaris.mjs"],
+  "styles": ["styles/septaris.css", "styles/fonts.css"],
   "languages": [
     {
       "lang": "fr",
@@ -43,9 +38,7 @@
     "Actor": {
       "character": {
         "label": "SEPTARIS.Sheet.Character",
-        "htmlFields": [
-          "background.biography"
-        ]
+        "htmlFields": ["background.biography"]
       }
     },
     "Item": {}

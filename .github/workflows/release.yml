@@ -61,7 +61,7 @@ jobs:
           echo "Release version: $VERSION"
 
       # ----------------------------------------------------------
-      # PREVENT DUPLICATE RELEASE
+      # DUPLICATE CHECK
       # ----------------------------------------------------------
 
       - name: Check tag does not already exist
@@ -73,7 +73,7 @@ jobs:
           fi
 
       # ----------------------------------------------------------
-      # CODE QUALITY
+      # CODE QUALITY BEFORE RELEASE
       # ----------------------------------------------------------
 
       - name: Run Biome
@@ -104,6 +104,7 @@ jobs:
           );
 
           const version = process.env.VERSION;
+
           const repository =
             `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}`;
 
@@ -126,7 +127,29 @@ jobs:
           EOF
 
       # ----------------------------------------------------------
-      # VERIFY
+      # FORMAT GENERATED FILES
+      # ----------------------------------------------------------
+
+      - name: Format release files
+        run: |
+          npx biome format --write \
+            package.json \
+            package-lock.json \
+            system.json
+
+      # ----------------------------------------------------------
+      # VALIDATE GENERATED FILES
+      # ----------------------------------------------------------
+
+      - name: Validate release files
+        run: |
+          npx biome ci \
+            package.json \
+            package-lock.json \
+            system.json
+
+      # ----------------------------------------------------------
+      # VERIFY VERSIONS
       # ----------------------------------------------------------
 
       - name: Verify versions
@@ -134,10 +157,12 @@ jobs:
         run: |
           SYSTEM_VERSION=$(node -p "require('./system.json').version")
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          LOCK_VERSION=$(node -p "require('./package-lock.json').version")
 
           echo "Requested version: $VERSION"
           echo "system.json:       $SYSTEM_VERSION"
           echo "package.json:      $PACKAGE_VERSION"
+          echo "package-lock.json: $LOCK_VERSION"
 
           if [ "$SYSTEM_VERSION" != "$VERSION" ]; then
             echo "system.json version mismatch"
@@ -146,6 +171,50 @@ jobs:
 
           if [ "$PACKAGE_VERSION" != "$VERSION" ]; then
             echo "package.json version mismatch"
+            exit 1
+          fi
+
+          if [ "$LOCK_VERSION" != "$VERSION" ]; then
+            echo "package-lock.json version mismatch"
+            exit 1
+          fi
+
+      # ----------------------------------------------------------
+      # VERIFY MANIFEST URLS
+      # ----------------------------------------------------------
+
+      - name: Verify manifest URLs
+        shell: bash
+        run: |
+          REPOSITORY="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+
+          EXPECTED_MANIFEST="${REPOSITORY}/releases/latest/download/system.json"
+          EXPECTED_DOWNLOAD="${REPOSITORY}/releases/download/v${VERSION}/septaris.zip"
+
+          MANIFEST=$(node -p "require('./system.json').manifest")
+          DOWNLOAD=$(node -p "require('./system.json').download")
+          URL=$(node -p "require('./system.json').url")
+
+          echo "Repository: $REPOSITORY"
+          echo "Manifest:   $MANIFEST"
+          echo "Download:   $DOWNLOAD"
+
+          if [ "$URL" != "$REPOSITORY" ]; then
+            echo "Invalid repository URL"
+            exit 1
+          fi
+
+          if [ "$MANIFEST" != "$EXPECTED_MANIFEST" ]; then
+            echo "Invalid manifest URL"
+            echo "Expected: $EXPECTED_MANIFEST"
+            echo "Got:      $MANIFEST"
+            exit 1
+          fi
+
+          if [ "$DOWNLOAD" != "$EXPECTED_DOWNLOAD" ]; then
+            echo "Invalid download URL"
+            echo "Expected: $EXPECTED_DOWNLOAD"
+            echo "Got:      $DOWNLOAD"
             exit 1
           fi
 
@@ -164,18 +233,24 @@ jobs:
             package-lock.json \
             system.json
 
+          if git diff --cached --quiet; then
+            echo "No release changes to commit."
+            exit 1
+          fi
+
           git commit -m "chore(release): v${VERSION} [skip ci]"
 
           git push origin HEAD:main
 
       # ----------------------------------------------------------
-      # CREATE TAG ON THE RELEASE COMMIT
+      # CREATE TAG
       # ----------------------------------------------------------
 
       - name: Create release tag
         shell: bash
         run: |
           git tag "v${VERSION}"
+
           git push origin "v${VERSION}"
 
       # ----------------------------------------------------------
@@ -198,13 +273,22 @@ jobs:
           cp system.json dist/system.json
 
       # ----------------------------------------------------------
-      # VERIFY ARCHIVE
+      # VERIFY RELEASE PACKAGE
       # ----------------------------------------------------------
 
-      - name: Show release files
+      - name: Verify release package
+        shell: bash
         run: |
+          echo "Release files:"
           ls -lah dist
+
+          echo ""
+          echo "septaris.zip contents:"
           unzip -l dist/septaris.zip
+
+          echo ""
+          echo "Manifest version:"
+          node -p "require('./dist/system.json').version"
 
       # ----------------------------------------------------------
       # CREATE GITHUB RELEASE
