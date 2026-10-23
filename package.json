@@ -1,10 +1,12 @@
 {
   "name": "septaris",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Système FoundryVTT pour le JDR Septaris.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "ci": "biome ci ."
   },
   "keywords": [
     "Septaris",

@@ -1,0 +1,221 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version à publier (ex: 0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release Septaris
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------------------------------------
+      # CHECKOUT
+      # ----------------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: main
+
+      # ----------------------------------------------------------
+      # NODE
+      # ----------------------------------------------------------
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ----------------------------------------------------------
+      # VERSION
+      # ----------------------------------------------------------
+
+      - name: Validate version
+        shell: bash
+        run: |
+          VERSION="${{ inputs.version }}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version: $VERSION"
+            echo "Expected format: X.Y.Z"
+            exit 1
+          fi
+
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "TAG=v$VERSION" >> "$GITHUB_ENV"
+
+          echo "Release version: $VERSION"
+
+      # ----------------------------------------------------------
+      # PREVENT DUPLICATE RELEASE
+      # ----------------------------------------------------------
+
+      - name: Check tag does not already exist
+        shell: bash
+        run: |
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} already exists."
+            exit 1
+          fi
+
+      # ----------------------------------------------------------
+      # CODE QUALITY
+      # ----------------------------------------------------------
+
+      - name: Run Biome
+        run: npm run ci
+
+      # ----------------------------------------------------------
+      # UPDATE PACKAGE.JSON + PACKAGE-LOCK.JSON
+      # ----------------------------------------------------------
+
+      - name: Update npm version
+        run: |
+          npm version "$VERSION" --no-git-tag-version
+
+      # ----------------------------------------------------------
+      # UPDATE SYSTEM.JSON
+      # ----------------------------------------------------------
+
+      - name: Update Foundry manifest
+        shell: bash
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const path = "system.json";
+
+          const system = JSON.parse(
+            fs.readFileSync(path, "utf8")
+          );
+
+          const version = process.env.VERSION;
+          const repository =
+            `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}`;
+
+          system.version = version;
+
+          system.url = repository;
+
+          system.manifest =
+            `${repository}/releases/latest/download/system.json`;
+
+          system.download =
+            `${repository}/releases/download/v${version}/septaris.zip`;
+
+          fs.writeFileSync(
+            path,
+            JSON.stringify(system, null, 2) + "\n"
+          );
+
+          console.log(`Updated system.json to ${version}`);
+          EOF
+
+      # ----------------------------------------------------------
+      # VERIFY
+      # ----------------------------------------------------------
+
+      - name: Verify versions
+        shell: bash
+        run: |
+          SYSTEM_VERSION=$(node -p "require('./system.json').version")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          echo "Requested version: $VERSION"
+          echo "system.json:       $SYSTEM_VERSION"
+          echo "package.json:      $PACKAGE_VERSION"
+
+          if [ "$SYSTEM_VERSION" != "$VERSION" ]; then
+            echo "system.json version mismatch"
+            exit 1
+          fi
+
+          if [ "$PACKAGE_VERSION" != "$VERSION" ]; then
+            echo "package.json version mismatch"
+            exit 1
+          fi
+
+      # ----------------------------------------------------------
+      # COMMIT RELEASE VERSION
+      # ----------------------------------------------------------
+
+      - name: Commit release version
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            package.json \
+            package-lock.json \
+            system.json
+
+          git commit -m "chore(release): v${VERSION} [skip ci]"
+
+          git push origin HEAD:main
+
+      # ----------------------------------------------------------
+      # CREATE TAG ON THE RELEASE COMMIT
+      # ----------------------------------------------------------
+
+      - name: Create release tag
+        shell: bash
+        run: |
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
+      # ----------------------------------------------------------
+      # BUILD FOUNDRY PACKAGE
+      # ----------------------------------------------------------
+
+      - name: Build Foundry package
+        shell: bash
+        run: |
+          mkdir -p dist
+
+          zip -r dist/septaris.zip \
+            system.json \
+            assets \
+            lang \
+            scripts \
+            styles \
+            templates
+
+          cp system.json dist/system.json
+
+      # ----------------------------------------------------------
+      # VERIFY ARCHIVE
+      # ----------------------------------------------------------
+
+      - name: Show release files
+        run: |
+          ls -lah dist
+          unzip -l dist/septaris.zip
+
+      # ----------------------------------------------------------
+      # CREATE GITHUB RELEASE
+      # ----------------------------------------------------------
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${VERSION}" \
+            dist/septaris.zip \
+            dist/system.json \
+            --title "Septaris v${VERSION}" \
+            --generate-notes

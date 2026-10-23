@@ -3,6 +3,9 @@
   "title": "Septaris",
   "description": "Système FoundryVTT pour le JDR Septaris.",
   "version": "0.0.1",
+  "url": "https://github.com/Vilsafur/Septaris-FoundryVTT",
+  "manifest": "https://github.com/Vilsafur/Septaris-FoundryVTT/releases/latest/download/system.json",
+  "download": "https://github.com/Vilsafur/Septaris-FoundryVTT/releases/download/v0.1.0/septaris.zip",
   "compatibility": {
     "minimum": "14",
     "verified": "14",

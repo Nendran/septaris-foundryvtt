@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Code quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Biome
+        run: npm run ci
+
+      - name: Validate system.json
+        run: |
+          node -e "
+            const fs = require('fs');
+
+            const system = JSON.parse(fs.readFileSync('system.json', 'utf8'));
+
+            const required = [
+              'id',
+              'title',
+              'version',
+              'compatibility'
+            ];
+
+            for (const field of required) {
+              if (!system[field]) {
+                throw new Error(\`Missing required field: \${field}\`);
+              }
+            }
+
+            if (system.id !== 'septaris') {
+              throw new Error(\`Unexpected system id: \${system.id}\`);
+            }
+
+            console.log(\`Septaris \${system.version} manifest is valid.\`);
+          "
+
+      - name: Check version consistency
+        run: |
+          node -e "
+            const fs = require('fs');
+
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const system = JSON.parse(fs.readFileSync('system.json', 'utf8'));
+
+            if (pkg.version !== system.version) {
+              throw new Error(
+                \`Version mismatch: package.json=\${pkg.version}, system.json=\${system.version}\`
+              );
+            }
+
+            console.log(\`Version OK: \${system.version}\`);
+          "
