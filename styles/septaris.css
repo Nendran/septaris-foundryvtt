@@ -39,5 +39,9 @@
   & .capacities-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, 175px);
+
+    & div {
+      cursor: pointer;
+    }
   }
 }
