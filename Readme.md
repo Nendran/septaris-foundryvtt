@@ -3,9 +3,9 @@
 > Implémentation du système de jeu de rôle **Septaris** pour **Foundry Virtual Tabletop**.
 
 ![Foundry VTT](https://img.shields.io/badge/Foundry%20VTT-v14-informational)
-![GitHub Release](https://img.shields.io/github/v/release/Vilsafur/Septaris-FoundryVTT?display_name=tag)
-![CI](https://github.com/Vilsafur/Septaris-FoundryVTT/actions/workflows/ci.yml/badge.svg)
-![License](https://img.shields.io/github/license/Vilsafur/Septaris-FoundryVTT)
+![GitHub Release](https://img.shields.io/github/v/release/Nendran/septaris-foundryvtt?display_name=tag)
+![CI](https://github.com/Nendran/septaris-foundryvtt/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/github/license/Nendran/septaris-foundryvtt)
 
 ---
 
@@ -30,7 +30,7 @@ Dans Foundry VTT :
 3. Dans le champ **Manifest URL**, saisissez :
 
 ```text
-https://github.com/Vilsafur/Septaris-FoundryVTT/releases/latest/download/system.json
+https://github.com/Nendran/septaris-foundryvtt/releases/latest/download/system.json
 ```
 
 4. Cliquez sur **Install**.
@@ -83,7 +83,7 @@ Le périmètre évoluera avec le développement du système de jeu et les retour
 Clonez le dépôt :
 
 ```bash
-git clone https://github.com/Vilsafur/Septaris-FoundryVTT.git
+git clone https://github.com/Nendran/septaris-foundryvtt.git
 cd Septaris-FoundryVTT
 ```
 
@@ -105,7 +105,7 @@ Par exemple :
 
 ```bash
 cd /path/to/FoundryVTT/Data/systems
-git clone https://github.com/Vilsafur/Septaris-FoundryVTT.git septaris
+git clone https://github.com/Nendran/septaris-foundryvtt.git septaris
 ```
 
 Redémarrez ensuite Foundry VTT si nécessaire.
@@ -244,8 +244,8 @@ Lors de la création d'une issue, indiquez si possible :
 
 ## Liens
 
-- **Releases :** https://github.com/Vilsafur/Septaris-FoundryVTT/releases
-- **Issues :** https://github.com/Vilsafur/Septaris-FoundryVTT/issues
+- **Releases :** https://github.com/Nendran/septaris-foundryvtt/releases
+- **Issues :** https://github.com/Nendran/septaris-foundryvtt/issues
 - **Foundry VTT :** https://foundryvtt.com/
 
 ---
