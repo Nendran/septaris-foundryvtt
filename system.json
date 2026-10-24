@@ -27,7 +27,7 @@
       "path": "lang/fr.json"
     }
   ],
-  "initiative": "1d20 + @abilities.dex.mod",
+  "initiative": "1d20 + @abilities.dex",
   "grid": {
     "distance": 1,
     "units": "m",
