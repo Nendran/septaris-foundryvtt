@@ -10,6 +10,16 @@ export function registerHandlebarsHelpers() {
     localizeLabel(key, typeof fallback === "string" ? fallback : key),
   );
 
+  Handlebars.registerHelper("capitalize", (str) => {
+    if (typeof str !== "string") return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  });
+
+  Handlebars.registerHelper("toUpperCase", (str) => {
+    if (typeof str !== "string") return "";
+    return str.toUpperCase();
+  });
+
   Handlebars.registerHelper("capacityName", (capacity) =>
     capacityName(capacity),
   );

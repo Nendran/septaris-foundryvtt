@@ -56,12 +56,24 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
     htmlElement
       .querySelectorAll("[data-action='update-capacity']")
       .forEach((element) => {
-        element.addEventListener("click", (event) => {
+        element.addEventListener("click", async (event) => {
           event.preventDefault();
+
           const capacityKey = element.dataset.capacity;
-          this.document.system.updateCapacity(capacityKey);
-          this.render();
+
+          const newProficiency =
+            this.document.system.getNextCapacityProficiency(capacityKey);
+
+          await this.document.update({
+            [`system.capacities.${capacityKey}`]: newProficiency,
+          });
         });
+      });
+    htmlElement
+      .querySelector("#roll")
+      .addEventListener("click", async (event) => {
+        event.preventDefault();
+        await this.document.system.roll();
       });
   }
 }

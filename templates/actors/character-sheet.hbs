@@ -10,50 +10,35 @@
       height="100"
       width="100"
     />
-    <div>
-      <div>Nom : {{actor.name}}</div>
-      <div>Origine: {{system.origin}}</div>
-    </div>
-    <div>
-      <div>Niveau: {{system.level}}</div>
-      <div>PE: {{system.pe}}</div>
+    <div class="sheet-header-info">
+      <div>
+        <div>Nom : {{actor.name}}</div>
+        <div>Origine: {{system.origin}}</div>
+      </div>
+      <div>
+        <div>Niveau: {{system.level}}</div>
+        <div>PE: {{system.pe}}</div>
+      </div>
     </div>
   </header>
 
   <section class="sheet-stats">
     <span title="Points de Vie">♥: {{system.health.value}}/{{system.health.max}}</span>
     <span title="Défense">🛡: {{system.defense}}</span>
-    <span title="Prouesse">🎲: 1D{{system.featDice}}</span>
+    <span title="Prouesse">🎲: D{{system.featDice}}</span>
     <span title="Vitesse">🏃: {{system.speed}}</span>
+    <button title="Jet" id="roll">🎲 Jet</button>
   </section>
 
   <hr />
 
   <section class="sheet-skills">
+    {{#each system.skillsModifiers as |modifier skill|}}
     <div>
-      <span>Force: <input type="text" name="system.skills.strength" value="{{system.skills.strength}}" data-dtype="Number" /></span>
-      <span>{{numberFormat system.skillsModifiers.strength sign=true}}</span>
+      <span>{{localize (concat "SEPTARIS.SKILL." (toUpperCase skill))}}: <input type="text" name="{{ concat "system.skills." skill}}" value="{{ lookup ../system.skills skill}}" data-dtype="Number" /></span>
+      <span>{{numberFormat modifier sign=true}}</span>
     </div>
-    <div>
-      <span>Dextérité: <input type="text" name="system.skills.dexterity" value="{{system.skills.dexterity}}" data-dtype="Number" /></span>
-      <span>{{numberFormat system.skillsModifiers.dexterity sign=true}}</span>
-    </div>
-    <div>
-      <span>Constitution: <input type="text" name="system.skills.constitution" value="{{system.skills.constitution}}" data-dtype="Number" /></span>
-      <span>{{numberFormat system.skillsModifiers.constitution sign=true}}</span>
-    </div>
-    <div>
-      <span>Intelligence: <input type="text" name="system.skills.intelligence" value="{{system.skills.intelligence}}" data-dtype="Number" /></span>
-      <span>{{numberFormat system.skillsModifiers.intelligence sign=true}}</span>
-    </div>
-    <div>
-      <span>Instinct: <input type="text" name="system.skills.instinct" value="{{system.skills.instinct}}" data-dtype="Number" /></span>
-      <span>{{numberFormat system.skillsModifiers.instinct sign=true}}</span>
-    </div>
-    <div>
-      <span>Charisme: <input type="text" name="system.skills.charisma" value="{{system.skills.charisma}}" data-dtype="Number" /></span>
-      <span>{{numberFormat system.skillsModifiers.charisma sign=true}}</span>
-    </div>
+    {{/each}}
   </section>
 
   {{! Sheet Tab Navigation }}
@@ -72,7 +57,7 @@
     {{! Biography Tab }}
     <div class="tab biography {{tabs.resume.cssClass}}" data-group="primary" data-tab="resume" role="tabpanel">
       <div class="capacities">
-        <h2>{{septarisLocalize "SEPTARIS.Sheet.Capacities"}}</h2>
+        <h2>{{localize "SEPTARIS.Sheet.Capacities"}}</h2>
         <div class="capacities-list">
           {{#each system.capacities as |proficiency name|}}
             <div class="capacity" data-action="update-capacity" data-capacity="{{name}}">

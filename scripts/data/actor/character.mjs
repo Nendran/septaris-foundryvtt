@@ -1,3 +1,6 @@
+import { SeptarisRollDialog } from "../../sheets/dialogs/roll-dialog.mjs";
+import { getRollMessageModeLabel, ROLL_MODES } from "../../utils/rolls.mjs";
+
 const { HTMLField, SchemaField, NumberField } = foundry.data.fields;
 
 export class CharacterData extends foundry.abstract.TypeDataModel {
@@ -242,12 +245,100 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     };
   }
 
-  updateCapacity(capacityKey) {
+  getNextCapacityProficiency(capacityKey) {
     const currentProficiency = this.capacities[capacityKey];
-    if (currentProficiency < 3) {
-      this.capacities[capacityKey] = currentProficiency + 1;
-    } else {
-      this.capacities[capacityKey] = 1;
+
+    return currentProficiency < 3 ? currentProficiency + 1 : 1;
+  }
+
+  async roll() {
+    const dialog = new SeptarisRollDialog({
+      skills: this.skillsModifiers,
+      capacities: this.capacities,
+    });
+    const rollOptions = await dialog.waitForResult();
+
+    const messageMode = rollOptions.messageMode;
+
+    const formula = this.buildFormula(
+      rollOptions.mode,
+      rollOptions.skill,
+      rollOptions.capacity,
+      Number(rollOptions.narration),
+      Number(rollOptions.bonus ?? 0),
+    );
+
+    const flavor = this.buildRollFlavor(rollOptions);
+
+    const roll = new Roll(formula, this.getRollData());
+    const evaluate = await roll.evaluate();
+    const featRoll = new Roll(
+      `1d${this.featDice}cs${this.featDice}`,
+      this.getRollData(),
+    );
+    const featEvaluate = await featRoll.evaluate();
+    console.log("roll", evaluate.product, "featEvaluate", featEvaluate.product);
+    await roll.toMessage(
+      {
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        flavor,
+      },
+      {
+        messageMode,
+      },
+    );
+    await featRoll.toMessage(
+      {
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        flavor,
+      },
+      {
+        messageMode,
+      },
+    );
+    return roll;
+  }
+
+  buildFormula(mode, skill, capacity, narration, bonus) {
+    const totalBonus =
+      narration + bonus + this.calculateSkillCapacityBonus(skill, capacity);
+    let dice = "1d20";
+
+    if (mode === ROLL_MODES.ADVANTAGE) dice = "2d20kh";
+    if (mode === ROLL_MODES.DISADVANTAGE) dice = "2d20kl";
+
+    return `${dice}+${totalBonus}`;
+  }
+
+  calculateSkillCapacityBonus(skill, capacity) {
+    const skillModifier = Number(this.skillsModifiers[skill]);
+    const proficiency = Number(this.capacities[capacity]);
+    if (skillModifier <= 0) {
+      return skillModifier + proficiency - 1;
     }
+
+    return skillModifier * proficiency;
+  }
+
+  /**
+   * Expose les modificateurs calculés sous @abilities.<clé>.mod.
+   * Foundry renvoie les données système directement : copier les objets enrichis
+   * évite de modifier le modèle de données ou de persister un modificateur périmé.
+   */
+  getRollData() {
+    return {};
+  }
+
+  buildRollFlavor(rollOptions) {
+    const parts = [];
+
+    const visibilityLabel = this.#getVisibilityLabel(rollOptions.messageMode);
+    if (visibilityLabel) parts.push(visibilityLabel);
+
+    return `${this.parent.name} — ${parts.join(" • ")}`;
+  }
+
+  #getVisibilityLabel(messageMode) {
+    return getRollMessageModeLabel(messageMode);
   }
 }
