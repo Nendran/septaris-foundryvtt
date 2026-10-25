@@ -102,15 +102,16 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       narration: data.narration,
       bonus: data.bonus,
       messageMode: data.messageMode,
+      difficulty: data.difficulty
     };
 
-    SeptarisRollDialog._submitted = true;
-    SeptarisRollDialog._resolver?.(result);
-    SeptarisRollDialog._resolver = null;
+    this._submitted = true;
+    this._resolver?.(result);
+    this._resolver = null;
   }
 
   static async #handleCancel() {
-    await SeptarisRollDialog.close();
+    await this.close();
   }
 
   async _preClose(options) {

@@ -1,0 +1,379 @@
+/* ==========================================================
+   SEPTARIS
+   Chat — Roll Card
+   ========================================================== */
+
+.septaris.chat-card {
+  --septaris-chat-bg: rgba(20, 20, 24, 0.96);
+  --septaris-chat-bg-soft: rgba(255, 255, 255, 0.045);
+
+  --septaris-chat-border: rgba(255, 255, 255, 0.12);
+  --septaris-chat-border-strong: rgba(255, 255, 255, 0.22);
+
+  --septaris-chat-text: #e8e5df;
+  --septaris-chat-muted: #a7a39b;
+
+  --septaris-chat-accent: #c8a96b;
+  --septaris-chat-accent-soft: rgba(200, 169, 107, 0.15);
+
+  --septaris-chat-success: #7db783;
+  --septaris-chat-success-soft: rgba(125, 183, 131, 0.15);
+
+  --septaris-chat-failure: #c46f6f;
+  --septaris-chat-failure-soft: rgba(196, 111, 111, 0.15);
+
+  color: var(--septaris-chat-text);
+
+  font-family: var(--font-body, sans-serif);
+
+  overflow: hidden;
+
+  border: 1px solid var(--septaris-chat-border);
+  border-radius: 6px;
+
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 50%),
+    var(--septaris-chat-bg);
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+.septaris .roll-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 48px;
+
+  padding: 8px 10px;
+
+  border-bottom: 1px solid var(--septaris-chat-border);
+
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.septaris .roll-card__identity {
+  display: flex;
+  align-items: center;
+
+  min-width: 0;
+
+  gap: 8px;
+}
+
+.septaris .roll-card__portrait {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  object-fit: cover;
+
+  border: 1px solid var(--septaris-chat-border-strong);
+  border-radius: 50%;
+}
+
+.septaris .roll-card__titles {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  line-height: 1.2;
+}
+
+.septaris .roll-card__actor {
+  overflow: hidden;
+
+  color: var(--septaris-chat-text);
+
+  font-family: var(--font-title, serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.septaris .roll-card__action {
+  margin-top: 2px;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.72rem;
+}
+
+/* ==========================================================
+   MODE
+   ========================================================== */
+
+.septaris .roll-card__mode {
+  padding: 3px 6px;
+
+  flex: 0 0 auto;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.62rem;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  border: 1px solid var(--septaris-chat-border);
+  border-radius: 3px;
+}
+
+.septaris .roll-card__mode--advantage {
+  color: var(--septaris-chat-success);
+  border-color: var(--septaris-chat-success);
+}
+
+.septaris .roll-card__mode--disadvantage {
+  color: var(--septaris-chat-failure);
+  border-color: var(--septaris-chat-failure);
+}
+
+/* ==========================================================
+   MODIFIERS
+   ========================================================== */
+
+.septaris .roll-card__modifiers {
+  display: flex;
+  flex-wrap: wrap;
+
+  padding: 7px 10px;
+
+  gap: 5px;
+
+  border-bottom: 1px solid var(--septaris-chat-border);
+}
+
+.septaris .roll-card__modifier {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 2px 6px;
+
+  gap: 4px;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.68rem;
+
+  border-radius: 3px;
+
+  background: var(--septaris-chat-bg-soft);
+}
+
+.septaris .roll-card__modifier strong {
+  color: var(--septaris-chat-text);
+
+  font-weight: 600;
+}
+
+/* ==========================================================
+   DICE RESULTS
+   ========================================================== */
+
+.septaris .roll-card__results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 1px;
+
+  background: var(--septaris-chat-border);
+}
+
+.septaris .roll-card__result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 72px;
+
+  padding: 8px;
+
+  background: var(--septaris-chat-bg);
+}
+
+.septaris .roll-card__result--main {
+  background:
+    radial-gradient(
+      circle at center,
+      var(--septaris-chat-accent-soft),
+      transparent 70%
+    ),
+    var(--septaris-chat-bg);
+}
+
+.septaris .roll-card__result-label {
+  margin-bottom: 2px;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.65rem;
+
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.septaris .roll-card__result-value {
+  color: var(--septaris-chat-text);
+
+  font-family: var(--font-title, serif);
+  font-size: 1.65rem;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+.septaris .roll-card__feat-value {
+  display: flex;
+  align-items: baseline;
+
+  gap: 4px;
+}
+
+.septaris .roll-card__feat-die {
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.65rem;
+}
+
+.septaris .roll-card__feat-success {
+  color: var(--septaris-chat-accent);
+
+  font-size: 1rem;
+
+  filter: drop-shadow(0 0 4px rgba(200, 169, 107, 0.5));
+}
+
+.septaris .roll-card__result--success {
+  background:
+    radial-gradient(
+      circle at center,
+      var(--septaris-chat-accent-soft),
+      transparent 70%
+    ),
+    var(--septaris-chat-bg);
+}
+
+.septaris .roll-card__result--success .roll-card__result-value {
+  color: var(--septaris-chat-accent);
+}
+
+/* ==========================================================
+   RESOLUTION
+   ========================================================== */
+
+.septaris .roll-card__resolution {
+  padding: 7px 10px;
+
+  border-top: 1px solid var(--septaris-chat-border);
+}
+
+.septaris .roll-card__resolution-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 22px;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.72rem;
+}
+
+.septaris .roll-card__resolution-row + .roll-card__resolution-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.septaris .roll-card__resolution-row strong {
+  color: var(--septaris-chat-text);
+
+  font-size: 0.78rem;
+}
+
+/* ==========================================================
+   FINAL OUTCOME
+   ========================================================== */
+
+.septaris .roll-card__outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 7px 10px;
+
+  border-top: 1px solid var(--septaris-chat-border);
+}
+
+.septaris .roll-card__outcome-label {
+  font-family: var(--font-title, serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.septaris .roll-card__outcome-detail {
+  margin-top: 2px;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.65rem;
+}
+
+.septaris .roll-card__outcome--success {
+  color: var(--septaris-chat-success);
+
+  background: var(--septaris-chat-success-soft);
+}
+
+.septaris .roll-card__outcome--failure {
+  color: var(--septaris-chat-failure);
+
+  background: var(--septaris-chat-failure-soft);
+}
+
+.septaris .roll-card__outcome--neutral {
+  color: var(--septaris-chat-accent);
+
+  background: var(--septaris-chat-accent-soft);
+}
+
+/* ==========================================================
+   FORMULA
+   ========================================================== */
+
+.septaris .roll-card__formula {
+  padding: 5px 8px;
+
+  color: var(--septaris-chat-muted);
+
+  font-size: 0.65rem;
+
+  text-align: center;
+
+  opacity: 0.85;
+
+  overflow: hidden;
+
+  font-family: monospace;
+  font-size: 0.6rem;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  border-top: 1px solid var(--septaris-chat-border);
+}

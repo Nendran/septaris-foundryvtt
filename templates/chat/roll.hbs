@@ -1,0 +1,160 @@
+<div class="septaris chat-card roll-card">
+  <header class="roll-card__header">
+    <div class="roll-card__identity">
+      {{#if actorImg}}
+        <img
+          class="roll-card__portrait"
+          src="{{actorImg}}"
+          alt="{{actorName}}"
+        />
+      {{/if}}
+
+      <div class="roll-card__titles">
+        <span class="roll-card__actor">
+          {{actorName}}
+        </span>
+
+        <span class="roll-card__action">
+          {{#if skill}}
+            {{localize (concat "SEPTARIS.SKILL." (toUpperCase skill))}}
+          {{else}}
+            Test
+          {{/if}}
+
+          {{#if capacity}}
+            · {{capacityName capacity}}
+          {{/if}}
+        </span>
+      </div>
+    </div>
+
+    {{#if modeLabel}}
+      <span class="roll-card__mode {{modeClass}}">
+        {{modeLabel}}
+      </span>
+    {{/if}}
+  </header>
+
+
+  {{!-- Modificateurs --}}
+  <div class="roll-card__modifiers">
+
+    {{#if modifier}}
+      <span class="roll-card__modifier">
+        {{localize "SEPTARIS.Chat.Modifier"}}
+        <strong>{{modifier}}</strong>
+      </span>
+    {{/if}}
+
+    {{#if narration}}
+      <span class="roll-card__modifier">
+        {{ localize "SEPTARIS.Chat.Narration"}}
+        <strong>+{{narration}}</strong>
+      </span>
+    {{/if}}
+
+    {{#if bonus}}
+      <span class="roll-card__modifier">
+        {{ localize "SEPTARIS.Chat.Bonus"}}
+        <strong>+{{bonus}}</strong>
+      </span>
+    {{/if}}
+
+  </div>
+
+
+  <section class="roll-card__results">
+
+    {{!-- Jet principal --}}
+    <div class="roll-card__result roll-card__result--main">
+      <span class="roll-card__result-label">
+        Résultat
+      </span>
+
+      <strong class="roll-card__result-value">
+        {{roll.total}}
+      </strong>
+    </div>
+
+
+    {{!-- Dé de prouesse --}}
+    <div
+      class="roll-card__result roll-card__result--feat
+        {{#if featSuccess}}roll-card__result--success{{/if}}"
+    >
+      <span class="roll-card__result-label">
+        Prouesse
+      </span>
+
+      <div class="roll-card__feat-value">
+        <strong class="roll-card__result-value">
+          {{featRoll.total}}
+        </strong>
+
+        <span class="roll-card__feat-die">
+          d{{featDie}}
+        </span>
+
+        {{#if featSuccess}}
+          <span
+            class="roll-card__feat-success"
+            title="Prouesse réussie"
+          >
+            ★
+          </span>
+        {{/if}}
+      </div>
+    </div>
+
+  </section>
+
+
+  {{!-- Résolution --}}
+  {{#if hasDifficulty}}
+
+    <section class="roll-card__resolution">
+
+      <div class="roll-card__resolution-row">
+        <span>DD</span>
+        <strong>{{difficulty}}</strong>
+      </div>
+
+      <div class="roll-card__resolution-row">
+        <span>Marge</span>
+        <strong>{{marginLabel}}</strong>
+      </div>
+
+      {{#if featSuccess}}
+        <div class="roll-card__resolution-row">
+          <span>Marge finale</span>
+          <strong>{{finalMarginLabel}}</strong>
+        </div>
+      {{/if}}
+
+    </section>
+
+
+    {{!-- Résultat final --}}
+    <footer class="roll-card__outcome {{outcomeClass}}">
+      <span class="roll-card__outcome-label">
+        {{outcomeLabel}}
+      </span>
+
+      {{#if outcomeDetail}}
+        <span class="roll-card__outcome-detail">
+          {{outcomeDetail}}
+        </span>
+      {{/if}}
+    </footer>
+
+  {{/if}}
+
+
+  {{!-- Formule, volontairement discrète --}}
+  {{#if formula}}
+    <div class="roll-card__formula">
+      {{formula}}
+    </div>
+  {{/if}}
+
+</div>

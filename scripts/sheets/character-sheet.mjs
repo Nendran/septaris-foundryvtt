@@ -1,4 +1,5 @@
 import { SYSTEM_PATH } from "../utils/constants.mjs";
+import { roll } from "../utils/rolls.mjs";
 
 const Base = foundry.applications.sheets.ActorSheetV2;
 const Handlebars = foundry.applications.api.HandlebarsApplicationMixin;
@@ -73,7 +74,7 @@ export class SeptarisCharacterSheet extends Handlebars(Base) {
       .querySelector("#roll")
       .addEventListener("click", async (event) => {
         event.preventDefault();
-        await this.document.system.roll();
+        await roll(this.document.system);
       });
   }
 }

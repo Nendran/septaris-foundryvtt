@@ -37,5 +37,9 @@
   "SEPTARIS.Interface.Roll.Launch": "Lancer le jet",
   "SEPTARIS.Interface.Roll.Cancel": "Annuler",
   "SEPTARIS.Interface.RollVisibility": "Visibilité du jet",
+  "SEPTARIS.Interface.Difficulty": "Difficulté",
+  "SEPTARIS.Chat.Narration": "Narration",
+  "SEPTARIS.Chat.Bonus": "Bonus",
+  "SEPTARIS.Chat.Modifier": "Mod.",
   "TYPES.Actor.character": "Personnage"
 }
