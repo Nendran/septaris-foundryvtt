@@ -84,22 +84,24 @@ export const roll = async (character) => {
 
   const messageMode = rollOptions.messageMode;
 
-  const skillCapacityBonus = calculateSkillCapacityBonus(rollOptions.skill, rollOptions.capacity, character.skillsModifiers, character.capacities)
+  const skillCapacityBonus = calculateSkillCapacityBonus(
+    rollOptions.skill,
+    rollOptions.capacity,
+    character.skillsModifiers,
+    character.capacities,
+  );
 
   const formula = buildFormula(
     rollOptions.mode,
     Number(rollOptions.narration),
     Number(rollOptions.bonus ?? 0),
-    skillCapacityBonus
+    skillCapacityBonus,
   );
 
   const flavor = buildRollFlavor(rollOptions, character);
 
   // Jet principal
-  const roll = await new Roll(
-    formula,
-    getRollData(),
-  ).evaluate();
+  const roll = await new Roll(formula, getRollData()).evaluate();
 
   // Dé de prouesse
   const featRoll = await new Roll(
@@ -107,7 +109,12 @@ export const roll = async (character) => {
     getRollData(),
   ).evaluate();
 
-  const result = calculateResult(roll, featRoll, rollOptions.difficulty, character.featDice)
+  const result = calculateResult(
+    roll,
+    featRoll,
+    rollOptions.difficulty,
+    character.featDice,
+  );
 
   const templateData = {
     actorName: character.parent.name,
@@ -129,7 +136,7 @@ export const roll = async (character) => {
     finalMarginLabel: result.finalMargin,
     outcomeLabel: "Résolution moyenne",
     outcomeDetail: "Prouesse",
-    outcomeClass: `roll-card__outcome--${result.isSuccess ? 'success' : 'failure'}`,
+    outcomeClass: `roll-card__outcome--${result.isSuccess ? "success" : "failure"}`,
     formula: roll.formula,
   };
 
@@ -157,20 +164,24 @@ export const roll = async (character) => {
     roll,
     featRoll,
   };
-}
+};
 
 const buildFormula = (mode, narration, bonus, skillCapacityBonus) => {
-  const totalBonus =
-    narration + bonus + skillCapacityBonus;
+  const totalBonus = narration + bonus + skillCapacityBonus;
   let dice = "1d20";
 
   if (mode === ROLL_MODES.ADVANTAGE) dice = "2d20kh";
   if (mode === ROLL_MODES.DISADVANTAGE) dice = "2d20kl";
 
   return `${dice}+${totalBonus}`;
-}
+};
 
-const calculateSkillCapacityBonus = (skill, capacity, skillsModifiers, capacities) => {
+const calculateSkillCapacityBonus = (
+  skill,
+  capacity,
+  skillsModifiers,
+  capacities,
+) => {
   const skillModifier = Number(skillsModifiers[skill]);
   const proficiency = Number(capacities[capacity]);
   if (skillModifier <= 0) {
@@ -178,11 +189,11 @@ const calculateSkillCapacityBonus = (skill, capacity, skillsModifiers, capacitie
   }
 
   return skillModifier * proficiency;
-}
+};
 
 const getRollData = () => {
   return {};
-}
+};
 
 const buildRollFlavor = (rollOptions, character) => {
   const parts = [];
@@ -191,25 +202,25 @@ const buildRollFlavor = (rollOptions, character) => {
   if (visibilityLabel) parts.push(visibilityLabel);
 
   return `${character.parent.name} — ${parts.join(" • ")}`;
-}
+};
 
 const calculateResult = (roll, featRoll, difficulty, featDice) => {
   const margin = Number(roll.total) - difficulty;
   const featResult = Number(featRoll.total) === featDice;
-  let finalMargin = margin
+  let finalMargin = margin;
   if (featResult) {
     if (margin >= 0) {
-      finalMargin = margin * 2
+      finalMargin = margin * 2;
     } else {
-      finalMargin = 0
+      finalMargin = 0;
     }
   }
-    
+
   const isSuccess = margin >= 0;
   return {
     margin,
     featResult,
     isSuccess,
-    finalMargin
-  }
-}
+    finalMargin,
+  };
+};

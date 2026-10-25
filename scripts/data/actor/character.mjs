@@ -248,6 +248,5 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     return currentProficiency < 3 ? currentProficiency + 1 : 1;
   }
 
-  async roll() {
-  }
+  async roll() {}
 }

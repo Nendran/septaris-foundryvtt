@@ -357,23 +357,13 @@
 
 .septaris .roll-card__formula {
   padding: 5px 8px;
-
   color: var(--septaris-chat-muted);
-
   font-size: 0.65rem;
-
   text-align: center;
-
   opacity: 0.85;
-
   overflow: hidden;
-
   font-family: monospace;
-  font-size: 0.6rem;
-
-  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
-
   border-top: 1px solid var(--septaris-chat-border);
 }
