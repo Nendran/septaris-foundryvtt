@@ -19,11 +19,11 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       width: 650,
     },
     actions: {
-      "cancel-roll": this.handleCancel,
+      "cancel-roll": this.#handleCancel,
     },
     form: {
       closeOnSubmit: true,
-      handler: this.handleSubmit,
+      handler: this.#handleSubmit,
     },
     window: {
       title: localizeLabel("SEPTARIS.Interface.RollOptions"),
@@ -93,7 +93,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
     return context;
   }
 
-  async handleSubmit(_event, form, formData) {
+  static async #handleSubmit(_event, form, formData) {
     const data = formData.object ?? Object.fromEntries(new FormData(form));
     const result = {
       mode: data.mode,
@@ -105,12 +105,16 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       difficulty: data.difficulty,
     };
 
+    // biome-ignore lint/complexity/noThisInStatic: Foundry ApplicationV2 binds `this` to the application instance.
     this._submitted = true;
+    // biome-ignore lint/complexity/noThisInStatic: Foundry ApplicationV2 binds `this` to the application instance.
     this._resolver?.(result);
+    // biome-ignore lint/complexity/noThisInStatic: Foundry ApplicationV2 binds `this` to the application instance.
     this._resolver = null;
   }
 
-  async handleCancel() {
+  static async #handleCancel() {
+    // biome-ignore lint/complexity/noThisInStatic: Foundry ApplicationV2 binds `this` to the application instance.
     await this.close();
   }
 
