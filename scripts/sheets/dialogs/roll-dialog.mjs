@@ -19,11 +19,11 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       width: 650,
     },
     actions: {
-      "cancel-roll": this.#handleCancel,
+      "cancel-roll": this.handleCancel,
     },
     form: {
       closeOnSubmit: true,
-      handler: this.#handleSubmit,
+      handler: this.handleSubmit,
     },
     window: {
       title: localizeLabel("SEPTARIS.Interface.RollOptions"),
@@ -93,7 +93,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
     return context;
   }
 
-  static async #handleSubmit(_event, form, formData) {
+  async handleSubmit(_event, form, formData) {
     const data = formData.object ?? Object.fromEntries(new FormData(form));
     const result = {
       mode: data.mode,
@@ -105,13 +105,13 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       difficulty: data.difficulty,
     };
 
-    SeptarisRollDialog._submitted = true;
-    SeptarisRollDialog._resolver?.(result);
-    SeptarisRollDialog._resolver = null;
+    this._submitted = true;
+    this._resolver?.(result);
+    this._resolver = null;
   }
 
-  static async #handleCancel() {
-    await SeptarisRollDialog.close();
+  async handleCancel() {
+    await this.close();
   }
 
   async _preClose(options) {
