@@ -1,20 +1,32 @@
-import { SeptarisRollDialog } from "../sheets/dialogs/roll-dialog.mjs";
-import { resolveAction } from "./resolution.mjs";
+import type { CharacterData } from "../data/actor/character.js";
+import {
+  type RollDialogResult,
+  SeptarisRollDialog,
+} from "../sheets/dialogs/roll-dialog.js";
+import { resolveAction } from "./resolution.js";
 
-export const ROLL_MODES = Object.freeze({
+export type ChatMessageMode = NonNullable<
+  Parameters<typeof ChatMessage.applyMode>[1]
+>;
+
+export const ROLL_MODES = {
   NORMAL: "normal",
   ADVANTAGE: "advantage",
   DISADVANTAGE: "disadvantage",
-});
+} as const;
 
-const DEFAULT_ROLL_MESSAGE_MODE = "public";
-const EXCLUDED_ROLL_MESSAGE_MODES = new Set(["ic"]);
+const DEFAULT_ROLL_MESSAGE_MODE = "public" as ChatMessageMode;
+
+const EXCLUDED_ROLL_MESSAGE_MODES = new Set<string>(["ic"]);
 
 function getConfiguredMessageModes() {
-  return globalThis.CONFIG?.ChatMessage?.modes ?? {};
+  return CONFIG.ChatMessage.modes;
 }
 
-function isRollMessageMode(value, modes = getConfiguredMessageModes()) {
+function isRollMessageMode(
+  value: unknown,
+  modes = getConfiguredMessageModes(),
+): value is ChatMessageMode {
   return (
     typeof value === "string" &&
     Object.hasOwn(modes, value) &&
@@ -28,38 +40,45 @@ export function getRollMessageModeChoices() {
   return Object.entries(modes)
     .filter(([value]) => isRollMessageMode(value, modes))
     .map(([value, mode]) => {
-      const label = mode?.label ?? value;
+      const label = mode.label ?? value;
+
       return {
         value,
-        label: globalThis.game?.i18n?.localize?.(label) ?? label,
-        icon: mode?.icon ?? "",
+        label: game.i18n.localize(label) ?? label,
+        icon: mode.icon ?? "",
       };
     });
 }
 
-export function getDefaultRollMessageMode() {
-  const configuredDefault = globalThis.game?.settings?.get?.(
-    "core",
-    "messageMode",
-  );
+export function getDefaultRollMessageMode(): ChatMessageMode {
+  const configuredDefault = game.settings.get("core", "messageMode");
+
   return normalizeRollMessageMode(configuredDefault, DEFAULT_ROLL_MESSAGE_MODE);
 }
 
-export function normalizeRollMessageMode(value, fallback) {
+export function normalizeRollMessageMode(
+  value: unknown,
+  fallback?: string,
+): ChatMessageMode {
   const modes = getConfiguredMessageModes();
-  const requestedMode = typeof value === "string" ? value : "";
-  if (isRollMessageMode(requestedMode, modes)) return requestedMode;
 
-  const fallbackMode = typeof fallback === "string" ? fallback : "";
-  if (isRollMessageMode(fallbackMode, modes)) return fallbackMode;
+  if (isRollMessageMode(value, modes)) {
+    return value;
+  }
 
-  const configuredDefault = globalThis.game?.settings?.get?.(
-    "core",
-    "messageMode",
-  );
-  if (isRollMessageMode(configuredDefault, modes)) return configuredDefault;
-  if (isRollMessageMode(DEFAULT_ROLL_MESSAGE_MODE, modes))
+  if (isRollMessageMode(fallback, modes)) {
+    return fallback;
+  }
+
+  const configuredDefault = game.settings.get("core", "messageMode");
+
+  if (isRollMessageMode(configuredDefault, modes)) {
+    return configuredDefault;
+  }
+
+  if (isRollMessageMode(DEFAULT_ROLL_MESSAGE_MODE, modes)) {
     return DEFAULT_ROLL_MESSAGE_MODE;
+  }
 
   return (
     Object.keys(modes).find((mode) => isRollMessageMode(mode, modes)) ??
@@ -67,21 +86,26 @@ export function normalizeRollMessageMode(value, fallback) {
   );
 }
 
-export function getRollMessageModeLabel(value) {
+export function getRollMessageModeLabel(value: unknown): string {
   const mode = normalizeRollMessageMode(value);
+
   const label = getConfiguredMessageModes()[mode]?.label ?? mode;
-  return globalThis.game?.i18n?.localize?.(label) ?? label;
+
+  return game.i18n.localize(label) ?? label;
 }
 
-export const roll = async (character) => {
+export const roll = async (character: CharacterData) => {
   const dialog = new SeptarisRollDialog({
     skills: character.skillsModifiers,
+
     capacities: character.capacities,
   });
 
   const rollOptions = await dialog.waitForResult();
 
-  if (!rollOptions) return;
+  if (!rollOptions) {
+    return;
+  }
 
   const messageMode = rollOptions.messageMode;
 
@@ -94,8 +118,8 @@ export const roll = async (character) => {
 
   const formula = buildFormula(
     rollOptions.mode,
-    Number(rollOptions.narration),
-    Number(rollOptions.bonus ?? 0),
+    rollOptions.narration,
+    rollOptions.bonus,
     skillCapacityBonus,
   );
 
@@ -112,37 +136,56 @@ export const roll = async (character) => {
 
   const featSuccess = Number(featRoll.total) === character.featDice;
 
-  const result = resolveAction(
-    {
-      total: roll.total,
-      target: rollOptions.difficulty,
-      featSuccess,
-    }
-  );
+  const result = resolveAction({
+    total: roll.total,
+    target: rollOptions.difficulty,
+    featSuccess,
+  });
 
   const templateData = {
     actorName: character.parent.name,
+
     actorImg: character.parent.img,
+
     capacity: rollOptions.capacity,
+
     skill: rollOptions.skill,
+
     modifier: skillCapacityBonus,
-    narration: Number(rollOptions.narration),
-    bonus: Number(rollOptions.bonus ?? 0),
+
+    narration: rollOptions.narration,
+
+    bonus: rollOptions.bonus,
+
     modeLabel: rollOptions.mode,
+
     modeClass: `roll-card__mode--${rollOptions.mode}`,
+
     roll,
     featRoll,
+
     featDie: character.featDice,
+
     featSuccess,
+
     hasDifficulty: true,
+
     difficulty: rollOptions.difficulty,
+
     marginLabel: result.margin,
+
     finalMarginLabel: result.finalMargin,
-    outcomeLabel: globalThis.game?.i18n?.localize?.(`SEPTARIS.Resolution.${result.outcome.key}`) ?? result.outcome.key,
+
+    outcomeLabel: game.i18n.localize(`SEPTARIS.Resolution.${result.outcome}`),
+
     outcomeDetail: featSuccess
       ? game.i18n.localize("SEPTARIS.ROLL.FEAT_SUCCESS")
       : null,
-    outcomeClass: `roll-card__outcome--${result.isSuccess ? "success" : "failure"}`,
+
+    outcomeClass: `roll-card__outcome--${
+      result.success ? "success" : "failure"
+    }`,
+
     formula: roll.formula,
   };
 
@@ -153,12 +196,16 @@ export const roll = async (character) => {
 
   const chatData = {
     author: game.user.id,
+
     speaker: ChatMessage.getSpeaker({
       actor: character.parent,
     }),
+
     flavor,
     content,
-    rolls: [roll, featRoll],
+
+    rolls: [JSON.stringify(roll.toJSON()), JSON.stringify(featRoll.toJSON())],
+
     style: CONST.CHAT_MESSAGE_STYLES.OTHER,
   };
 
@@ -172,24 +219,42 @@ export const roll = async (character) => {
   };
 };
 
-const buildFormula = (mode, narration, bonus, skillCapacityBonus) => {
+const buildFormula = (
+  mode: RollDialogResult["mode"],
+  narration: number,
+  bonus: number,
+  skillCapacityBonus: number,
+): string => {
   const totalBonus = narration + bonus + skillCapacityBonus;
+
   let dice = "1d20";
 
-  if (mode === ROLL_MODES.ADVANTAGE) dice = "2d20kh";
-  if (mode === ROLL_MODES.DISADVANTAGE) dice = "2d20kl";
+  if (mode === ROLL_MODES.ADVANTAGE) {
+    dice = "2d20kh";
+  }
+
+  if (mode === ROLL_MODES.DISADVANTAGE) {
+    dice = "2d20kl";
+  }
 
   return `${dice}${formatModifier(totalBonus)}`;
 };
 
 const calculateSkillCapacityBonus = (
-  skill,
-  capacity,
-  skillsModifiers,
-  capacities,
-) => {
-  const skillModifier = Number(skillsModifiers[skill]);
-  const proficiency = Number(capacities[capacity]);
+  skill: string,
+  capacity: string,
+  skillsModifiers: CharacterData["skillsModifiers"],
+  capacities: CharacterData["capacities"],
+): number => {
+  const skillValue = Reflect.get(skillsModifiers, skill);
+
+  const proficiencyValue = Reflect.get(capacities, capacity);
+
+  const skillModifier = typeof skillValue === "number" ? skillValue : 0;
+
+  const proficiency =
+    typeof proficiencyValue === "number" ? proficiencyValue : 1;
+
   if (skillModifier <= 0) {
     return skillModifier + proficiency - 1;
   }
@@ -197,21 +262,33 @@ const calculateSkillCapacityBonus = (
   return skillModifier * proficiency;
 };
 
-const getRollData = () => {
+const getRollData = (): Record<string, unknown> => {
   return {};
 };
 
-const buildRollFlavor = (rollOptions, character) => {
-  const parts = [];
+const buildRollFlavor = (
+  rollOptions: RollDialogResult,
+  character: CharacterData,
+): string => {
+  const parts: string[] = [];
 
   const visibilityLabel = getRollMessageModeLabel(rollOptions.messageMode);
-  if (visibilityLabel) parts.push(visibilityLabel);
+
+  if (visibilityLabel) {
+    parts.push(visibilityLabel);
+  }
 
   return `${character.parent.name} — ${parts.join(" • ")}`;
 };
 
-function formatModifier(value) {
-  if (value > 0) return `+${value}`;
-  if (value < 0) return `${value}`;
+function formatModifier(value: number): string {
+  if (value > 0) {
+    return `+${value}`;
+  }
+
+  if (value < 0) {
+    return `${value}`;
+  }
+
   return "";
 }

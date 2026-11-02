@@ -1,3 +1,34 @@
+export type ResolutionDegree =
+  | "exceptionalFailure"
+  | "strongFailure"
+  | "mediumFailure"
+  | "weakFailure"
+  | "limit"
+  | "weakSuccess"
+  | "mediumSuccess"
+  | "strongSuccess"
+  | "exceptionalSuccess";
+
+export type FeatEffect = "rescue" | "double" | null;
+
+export interface ResolutionResult {
+  total: number;
+  target: number;
+
+  margin: number;
+  finalMargin: number;
+
+  success: boolean;
+
+  featSuccess: boolean;
+  featEffect: FeatEffect;
+
+  outcome: {
+    key: ResolutionDegree;
+    success: boolean;
+  };
+}
+
 export const RESOLUTION_DEGREES = {
   EXCEPTIONAL_FAILURE: "exceptionalFailure",
   STRONG_FAILURE: "strongFailure",
@@ -10,7 +41,7 @@ export const RESOLUTION_DEGREES = {
   EXCEPTIONAL_SUCCESS: "exceptionalSuccess",
 };
 
-export function getResolutionDegree(margin) {
+export function getResolutionDegree(margin: number): string {
   if (margin <= -16) {
     return RESOLUTION_DEGREES.EXCEPTIONAL_FAILURE;
   }
@@ -50,6 +81,10 @@ export function resolveAction({
   total,
   target,
   featSuccess = false,
+}: {
+  total: number;
+  target: number;
+  featSuccess?: boolean;
 }) {
   const margin = total - target;
 

@@ -9,3 +9,5 @@
 *.css  text eol=lf
 *.html text eol=lf
 *.hbs  text eol=lf
+
+scripts/

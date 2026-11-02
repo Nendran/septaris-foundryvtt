@@ -28,10 +28,7 @@ describe("resolution degree boundaries", () => {
 
   for (const [margin, expected] of cases) {
     it(`${margin} => ${expected}`, () => {
-      assert.equal(
-        getResolutionDegree(margin),
-        expected,
-      );
+      assert.equal(getResolutionDegree(margin), expected);
     });
   }
 });
@@ -66,10 +63,7 @@ describe("resolveAction", () => {
     assert.equal(result.margin, 3);
     assert.equal(result.finalMargin, 3);
     assert.equal(result.success, true);
-    assert.equal(
-      result.outcome,
-      RESOLUTION_DEGREES.WEAK_SUCCESS,
-    );
+    assert.equal(result.outcome, RESOLUTION_DEGREES.WEAK_SUCCESS);
   });
 
   it("turns a failure into a limit success when feat succeeds", () => {
@@ -83,10 +77,7 @@ describe("resolveAction", () => {
     assert.equal(result.finalMargin, 0);
     assert.equal(result.success, true);
     assert.equal(result.featEffect, "rescue");
-    assert.equal(
-      result.outcome,
-      RESOLUTION_DEGREES.LIMIT,
-    );
+    assert.equal(result.outcome, RESOLUTION_DEGREES.LIMIT);
   });
 
   it("doubles a successful margin when feat succeeds", () => {
@@ -100,10 +91,7 @@ describe("resolveAction", () => {
     assert.equal(result.finalMargin, 6);
     assert.equal(result.success, true);
     assert.equal(result.featEffect, "double");
-    assert.equal(
-      result.outcome,
-      RESOLUTION_DEGREES.MEDIUM_SUCCESS,
-    );
+    assert.equal(result.outcome, RESOLUTION_DEGREES.MEDIUM_SUCCESS);
   });
 
   it("keeps margin 0 at 0 when feat succeeds", () => {
@@ -117,9 +105,6 @@ describe("resolveAction", () => {
     assert.equal(result.finalMargin, 0);
     assert.equal(result.success, true);
     assert.equal(result.featEffect, "double");
-    assert.equal(
-      result.outcome,
-      RESOLUTION_DEGREES.LIMIT,
-    );
+    assert.equal(result.outcome, RESOLUTION_DEGREES.LIMIT);
   });
 });

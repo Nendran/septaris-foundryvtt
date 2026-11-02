@@ -1,6 +1,6 @@
-import { localizeLabel } from "./localisation.mjs";
+import { localizeLabel } from "./localisation.js";
 
-export function capacityName(capacity) {
+export function capacityName(capacity: string) {
   const localized = localizeLabel(
     `SEPTARIS.CAPACITIES.${capacity.toUpperCase()}`,
   );
@@ -8,7 +8,7 @@ export function capacityName(capacity) {
   return localized.charAt(0).toUpperCase() + localized.slice(1).toLowerCase();
 }
 
-export function capacityProficiency(proficiency) {
+export function capacityProficiency(proficiency: number) {
   if (proficiency === 1) {
     return "○";
   }
@@ -20,7 +20,7 @@ export function capacityProficiency(proficiency) {
   }
 }
 
-export function proficiencyName(proficiency) {
+export function proficiencyName(proficiency: number) {
   let localized = localizeLabel("SEPTARIS.CAPACITIES.PROFICIENCY.NOVICE");
   if (proficiency === 2) {
     localized = localizeLabel("SEPTARIS.CAPACITIES.PROFICIENCY.ADEPT");

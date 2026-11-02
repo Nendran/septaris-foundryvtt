@@ -2,8 +2,8 @@ import {
   capacityName,
   capacityProficiency,
   proficiencyName,
-} from "./capacity.mjs";
-import { localizeLabel } from "./localisation.mjs";
+} from "./capacity.js";
+import { localizeLabel } from "./localisation.js";
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("septarisLocalize", (key, fallback) =>

@@ -19,10 +19,7 @@ describe("calculateApplicableModifier", () => {
   for (const [modifier, proficiency, expected] of cases) {
     it(`${modifier}, rank ${proficiency} => ${expected}`, () => {
       assert.equal(
-        calculateApplicableModifier(
-          modifier,
-          proficiency,
-        ),
+        calculateApplicableModifier(modifier, proficiency),
         expected,
       );
     });
