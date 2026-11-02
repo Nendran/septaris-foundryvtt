@@ -1,7 +1,7 @@
 {
   "name": "septaris",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Système FoundryVTT pour le JDR Septaris.",
   "scripts": {
     "check": "biome check .",
