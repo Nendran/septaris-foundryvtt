@@ -41,5 +41,14 @@
   "SEPTARIS.Chat.Narration": "Narration",
   "SEPTARIS.Chat.Bonus": "Bonus",
   "SEPTARIS.Chat.Modifier": "Mod.",
+  "SEPTARIS.Resolution.EXCEPTIONAL_FAILURE": "Échec exceptionnel",
+  "SEPTARIS.Resolution.STRONG_FAILURE": "Échec sérieux",
+  "SEPTARIS.Resolution.MEDIUM_FAILURE": "Échec moyen",
+  "SEPTARIS.Resolution.WEAK_FAILURE": "Échec faible",
+  "SEPTARIS.Resolution.LIMIT": "Limite",
+  "SEPTARIS.Resolution.WEAK_SUCCESS": "Succès faible",
+  "SEPTARIS.Resolution.MEDIUM_SUCCESS": "Succès moyen",
+  "SEPTARIS.Resolution.STRONG_SUCCESS": "Succès sérieux",
+  "SEPTARIS.Resolution.EXCEPTIONAL_SUCCESS": "Succès exceptionnel",
   "TYPES.Actor.character": "Personnage"
 }

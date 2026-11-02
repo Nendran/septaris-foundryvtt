@@ -75,9 +75,12 @@ jobs:
       # ----------------------------------------------------------
       # CODE QUALITY BEFORE RELEASE
       # ----------------------------------------------------------
-
+        
       - name: Run Biome
         run: npm run ci
+
+      - name: Run unit tests
+        run: npm test
 
       # ----------------------------------------------------------
       # UPDATE PACKAGE.JSON + PACKAGE-LOCK.JSON

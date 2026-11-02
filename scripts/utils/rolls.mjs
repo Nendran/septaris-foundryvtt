@@ -1,4 +1,5 @@
 import { SeptarisRollDialog } from "../sheets/dialogs/roll-dialog.mjs";
+import { resolveAction } from "./resolution.mjs";
 
 export const ROLL_MODES = Object.freeze({
   NORMAL: "normal",
@@ -109,11 +110,14 @@ export const roll = async (character) => {
     getRollData(),
   ).evaluate();
 
-  const result = calculateResult(
-    roll,
-    featRoll,
-    rollOptions.difficulty,
-    character.featDice,
+  const featSuccess = Number(featRoll.total) === character.featDice;
+
+  const result = resolveAction(
+    {
+      total: roll.total,
+      target: rollOptions.difficulty,
+      featSuccess,
+    }
   );
 
   const templateData = {
@@ -129,13 +133,15 @@ export const roll = async (character) => {
     roll,
     featRoll,
     featDie: character.featDice,
-    featSuccess: featRoll.total === character.featDice,
+    featSuccess,
     hasDifficulty: true,
     difficulty: rollOptions.difficulty,
     marginLabel: result.margin,
     finalMarginLabel: result.finalMargin,
-    outcomeLabel: "Résolution moyenne",
-    outcomeDetail: "Prouesse",
+    outcomeLabel: globalThis.game?.i18n?.localize?.(`SEPTARIS.Resolution.${result.outcome.key}`) ?? result.outcome.key,
+    outcomeDetail: featSuccess
+      ? game.i18n.localize("SEPTARIS.ROLL.FEAT_SUCCESS")
+      : null,
     outcomeClass: `roll-card__outcome--${result.isSuccess ? "success" : "failure"}`,
     formula: roll.formula,
   };
@@ -173,7 +179,7 @@ const buildFormula = (mode, narration, bonus, skillCapacityBonus) => {
   if (mode === ROLL_MODES.ADVANTAGE) dice = "2d20kh";
   if (mode === ROLL_MODES.DISADVANTAGE) dice = "2d20kl";
 
-  return `${dice}+${totalBonus}`;
+  return `${dice}${formatModifier(totalBonus)}`;
 };
 
 const calculateSkillCapacityBonus = (
@@ -204,23 +210,8 @@ const buildRollFlavor = (rollOptions, character) => {
   return `${character.parent.name} — ${parts.join(" • ")}`;
 };
 
-const calculateResult = (roll, featRoll, difficulty, featDice) => {
-  const margin = Number(roll.total) - difficulty;
-  const featResult = Number(featRoll.total) === featDice;
-  let finalMargin = margin;
-  if (featResult) {
-    if (margin >= 0) {
-      finalMargin = margin * 2;
-    } else {
-      finalMargin = 0;
-    }
-  }
-
-  const isSuccess = margin >= 0;
-  return {
-    margin,
-    featResult,
-    isSuccess,
-    finalMargin,
-  };
-};
+function formatModifier(value) {
+  if (value > 0) return `+${value}`;
+  if (value < 0) return `${value}`;
+  return "";
+}

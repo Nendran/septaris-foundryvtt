@@ -6,7 +6,9 @@
   "scripts": {
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "ci": "biome ci ."
+    "ci": "biome ci .",
+    "test": "node --test",
+    "test:watch": "node --test --watch"
   },
   "keywords": [
     "Septaris",

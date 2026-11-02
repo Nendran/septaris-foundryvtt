@@ -33,6 +33,9 @@ jobs:
       - name: Run Biome
         run: npm run ci
 
+      - name: Run unit tests
+        run: npm test
+
       - name: Validate system.json
         run: |
           node -e "
