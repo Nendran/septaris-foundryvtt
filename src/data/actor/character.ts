@@ -70,7 +70,7 @@ function defineCharacterSchema() {
       acrobatics: proficiencyField(),
       addressing: proficiencyField(),
       athletics: proficiencyField(),
-      craft: proficiencyField(),
+      crafts: proficiencyField(),
       deception: proficiencyField(),
       discretion: proficiencyField(),
       handtohand: proficiencyField(),
