@@ -3,96 +3,12 @@ import {
   type RollDialogResult,
   SeptarisRollDialog,
 } from "../sheets/dialogs/roll-dialog.js";
+import { getRollMessageModeLabel } from "./chat-message-modes.js";
 import { resolveAction } from "./resolution.js";
-
-export type ChatMessageMode = NonNullable<
-  Parameters<typeof ChatMessage.applyMode>[1]
->;
-
-export const ROLL_MODES = {
-  NORMAL: "normal",
-  ADVANTAGE: "advantage",
-  DISADVANTAGE: "disadvantage",
-} as const;
-
-const DEFAULT_ROLL_MESSAGE_MODE = "public" as ChatMessageMode;
-
-const EXCLUDED_ROLL_MESSAGE_MODES = new Set<string>(["ic"]);
-
-function getConfiguredMessageModes() {
-  return CONFIG.ChatMessage.modes;
-}
-
-function isRollMessageMode(
-  value: unknown,
-  modes = getConfiguredMessageModes(),
-): value is ChatMessageMode {
-  return (
-    typeof value === "string" &&
-    Object.hasOwn(modes, value) &&
-    !EXCLUDED_ROLL_MESSAGE_MODES.has(value)
-  );
-}
-
-export function getRollMessageModeChoices() {
-  const modes = getConfiguredMessageModes();
-
-  return Object.entries(modes)
-    .filter(([value]) => isRollMessageMode(value, modes))
-    .map(([value, mode]) => {
-      const label = mode.label ?? value;
-
-      return {
-        value,
-        label: game.i18n.localize(label) ?? label,
-        icon: mode.icon ?? "",
-      };
-    });
-}
-
-export function getDefaultRollMessageMode(): ChatMessageMode {
-  const configuredDefault = game.settings.get("core", "messageMode");
-
-  return normalizeRollMessageMode(configuredDefault, DEFAULT_ROLL_MESSAGE_MODE);
-}
-
-export function normalizeRollMessageMode(
-  value: unknown,
-  fallback?: string,
-): ChatMessageMode {
-  const modes = getConfiguredMessageModes();
-
-  if (isRollMessageMode(value, modes)) {
-    return value;
-  }
-
-  if (isRollMessageMode(fallback, modes)) {
-    return fallback;
-  }
-
-  const configuredDefault = game.settings.get("core", "messageMode");
-
-  if (isRollMessageMode(configuredDefault, modes)) {
-    return configuredDefault;
-  }
-
-  if (isRollMessageMode(DEFAULT_ROLL_MESSAGE_MODE, modes)) {
-    return DEFAULT_ROLL_MESSAGE_MODE;
-  }
-
-  return (
-    Object.keys(modes).find((mode) => isRollMessageMode(mode, modes)) ??
-    DEFAULT_ROLL_MESSAGE_MODE
-  );
-}
-
-export function getRollMessageModeLabel(value: unknown): string {
-  const mode = normalizeRollMessageMode(value);
-
-  const label = getConfiguredMessageModes()[mode]?.label ?? mode;
-
-  return game.i18n.localize(label) ?? label;
-}
+import {
+  buildFormula,
+  calculateCharacteristicSkillBonus,
+} from "./roll-calculation.js";
 
 export const roll = async (character: CharacterData) => {
   const dialog = new SeptarisRollDialog({
@@ -108,11 +24,22 @@ export const roll = async (character: CharacterData) => {
 
   const messageMode = rollOptions.messageMode;
 
-  const characteristicSkillBonus = calculateCharacteristicSkillBonus(
-    rollOptions.characteristic,
-    rollOptions.skill,
+  const characteristicValue = Reflect.get(
     character.characteristicsModifiers,
-    character.skills,
+    rollOptions.characteristic,
+  );
+
+  const proficiencyValue = Reflect.get(character.skills, rollOptions.skill);
+
+  const skillModifier =
+    typeof characteristicValue === "number" ? characteristicValue : 0;
+
+  const proficiency =
+    typeof proficiencyValue === "number" ? proficiencyValue : 1;
+
+  const characteristicSkillBonus = calculateCharacteristicSkillBonus(
+    skillModifier,
+    proficiency,
   );
 
   const formula = buildFormula(
@@ -195,53 +122,6 @@ export const roll = async (character: CharacterData) => {
   };
 };
 
-const buildFormula = (
-  mode: RollDialogResult["mode"],
-  narration: number,
-  bonus: number,
-  characteristicSkillBonus: number,
-): string => {
-  const totalBonus = narration + bonus + characteristicSkillBonus;
-
-  let dice = "1d20";
-
-  if (mode === ROLL_MODES.ADVANTAGE) {
-    dice = "2d20kh";
-  }
-
-  if (mode === ROLL_MODES.DISADVANTAGE) {
-    dice = "2d20kl";
-  }
-
-  return `${dice}${formatModifier(totalBonus)}`;
-};
-
-const calculateCharacteristicSkillBonus = (
-  characteristic: string,
-  skill: string,
-  characteristicsModifiers: CharacterData["characteristicsModifiers"],
-  skills: CharacterData["skills"],
-): number => {
-  const characteristicValue = Reflect.get(
-    characteristicsModifiers,
-    characteristic,
-  );
-
-  const proficiencyValue = Reflect.get(skills, skill);
-
-  const skillModifier =
-    typeof characteristicValue === "number" ? characteristicValue : 0;
-
-  const proficiency =
-    typeof proficiencyValue === "number" ? proficiencyValue : 1;
-
-  if (skillModifier <= 0) {
-    return skillModifier + proficiency - 1;
-  }
-
-  return skillModifier * proficiency;
-};
-
 const getRollData = (): Record<string, unknown> => {
   return {};
 };
@@ -260,15 +140,3 @@ const buildRollFlavor = (
 
   return `${character.parent.name} — ${parts.join(" • ")}`;
 };
-
-function formatModifier(value: number): string {
-  if (value > 0) {
-    return `+${value}`;
-  }
-
-  if (value < 0) {
-    return `${value}`;
-  }
-
-  return "";
-}
