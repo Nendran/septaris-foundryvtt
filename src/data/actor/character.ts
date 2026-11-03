@@ -107,7 +107,7 @@ export type CharacteristicKey =
   | "instinct"
   | "charisma";
 
-export type CharacteristicModifiers = Record<CharacteristicKey, number>;
+export type characteristicsModifiers = Record<CharacteristicKey, number>;
 
 type CharacterProps = ModelPropsFromSchema<CharacterSchema>;
 
@@ -131,12 +131,12 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
 
   declare skills: CharacterProps["skills"];
 
-  declare characteristicModifiers: CharacteristicModifiers;
+  declare characteristicsModifiers: characteristicsModifiers;
 
   static override defineSchema = defineCharacterSchema;
 
   get defense(): number {
-    return 12 + this.characteristicModifiers.dexterity;
+    return 12 + this.characteristicsModifiers.dexterity;
   }
 
   get speed(): number {
@@ -147,7 +147,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
   override prepareDerivedData(): void {
     super.prepareDerivedData();
 
-    this.characteristicModifiers = {
+    this.characteristicsModifiers = {
       strength: Math.floor((this.characteristics.strength - 10) / 2),
       dexterity: Math.floor((this.characteristics.dexterity - 10) / 2),
       constitution: Math.floor((this.characteristics.constitution - 10) / 2),
@@ -156,7 +156,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
       charisma: Math.floor((this.characteristics.charisma - 10) / 2),
     };
 
-    this.health.max = 15 + this.characteristicModifiers.constitution;
+    this.health.max = 15 + this.characteristicsModifiers.constitution;
 
     this.health.value = Math.min(this.health.value, this.health.max);
   }

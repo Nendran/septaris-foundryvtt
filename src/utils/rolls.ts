@@ -96,7 +96,7 @@ export function getRollMessageModeLabel(value: unknown): string {
 
 export const roll = async (character: CharacterData) => {
   const dialog = new SeptarisRollDialog({
-    characteristics: character.characteristicModifiers,
+    characteristics: character.characteristicsModifiers,
     skills: character.skills,
   });
 
@@ -111,7 +111,7 @@ export const roll = async (character: CharacterData) => {
   const characteristicSkillBonus = calculateCharacteristicSkillBonus(
     rollOptions.characteristic,
     rollOptions.skill,
-    character.characteristicModifiers,
+    character.characteristicsModifiers,
     character.skills,
   );
 
@@ -219,11 +219,11 @@ const buildFormula = (
 const calculateCharacteristicSkillBonus = (
   characteristic: string,
   skill: string,
-  characteristicModifiers: CharacterData["characteristicModifiers"],
+  characteristicsModifiers: CharacterData["characteristicsModifiers"],
   skills: CharacterData["skills"],
 ): number => {
   const characteristicValue = Reflect.get(
-    characteristicModifiers,
+    characteristicsModifiers,
     characteristic,
   );
 

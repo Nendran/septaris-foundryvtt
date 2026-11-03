@@ -60,9 +60,9 @@
         <h2>{{localize "SEPTARIS.Sheet.Skills"}}</h2>
         <div class="skills-list">
           {{#each system.skills as |proficiency name|}}
-            <div class="capacity" data-action="update-capacity" data-capacity="{{name}}">
+            <div class="skill" data-action="update-skill" data-skill="{{name}}">
               <span title={{proficiencyName proficiency }}>
-                {{capacityProficiency proficiency}} {{capacityName name}}
+                {{skillProficiency proficiency}} {{skillName name}}
               </span>
             </div>
           {{/each}}
