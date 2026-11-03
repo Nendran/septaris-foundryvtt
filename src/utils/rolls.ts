@@ -31,14 +31,14 @@ export const roll = async (character: CharacterData) => {
 
   const proficiencyValue = Reflect.get(character.skills, rollOptions.skill);
 
-  const skillModifier =
+  const characteristicModifier =
     typeof characteristicValue === "number" ? characteristicValue : 0;
 
   const proficiency =
     typeof proficiencyValue === "number" ? proficiencyValue : 1;
 
   const characteristicSkillBonus = calculateCharacteristicSkillBonus(
-    skillModifier,
+    characteristicModifier,
     proficiency,
   );
 

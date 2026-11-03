@@ -4,19 +4,21 @@ export const ROLL_MODES = {
   DISADVANTAGE: "disadvantage",
 } as const;
 
+type RollMode = (typeof ROLL_MODES)[keyof typeof ROLL_MODES];
+
 export const calculateCharacteristicSkillBonus = (
-  skillModifier: number,
+  characteristicModifier: number,
   proficiency: number,
 ): number => {
-  if (skillModifier <= 0) {
-    return skillModifier + proficiency - 1;
+  if (characteristicModifier <= 0) {
+    return characteristicModifier + proficiency - 1;
   }
 
-  return skillModifier * proficiency;
+  return characteristicModifier * proficiency;
 };
 
 export const buildFormula = (
-  mode: "normal" | "advantage" | "disadvantage",
+  mode: RollMode,
   narration: number,
   bonus: number,
   characteristicSkillBonus: number,
