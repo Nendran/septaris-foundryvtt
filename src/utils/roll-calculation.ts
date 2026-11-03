@@ -4,7 +4,7 @@ export const ROLL_MODES = {
   DISADVANTAGE: "disadvantage",
 } as const;
 
-type RollMode = (typeof ROLL_MODES)[keyof typeof ROLL_MODES];
+export type RollMode = (typeof ROLL_MODES)[keyof typeof ROLL_MODES];
 
 export const calculateCharacteristicSkillBonus = (
   characteristicModifier: number,

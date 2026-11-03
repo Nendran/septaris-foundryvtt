@@ -12,7 +12,7 @@ import {
 } from "../../utils/chat-message-modes.js";
 import { SYSTEM_PATH } from "../../utils/constants.js";
 import { localizeLabel } from "../../utils/localisation.js";
-import { ROLL_MODES } from "../../utils/roll-calculation.js";
+import { ROLL_MODES, RollMode } from "../../utils/roll-calculation.js";
 
 interface RollDialogConfig {
   title: string;
@@ -26,13 +26,10 @@ export interface RollDialogResult {
   narration: number;
   bonus: number;
   difficulty: number;
-
-  mode: "normal" | "advantage" | "disadvantage";
+  mode: RollMode;
 
   messageMode: ChatMessageMode;
 }
-
-type RollMode = RollDialogResult["mode"];
 
 interface RollDialogContext extends ApplicationRenderContext {
   rollConfig: RollDialogConfig;
