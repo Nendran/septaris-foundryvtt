@@ -96,9 +96,8 @@ export function getRollMessageModeLabel(value: unknown): string {
 
 export const roll = async (character: CharacterData) => {
   const dialog = new SeptarisRollDialog({
-    skills: character.skillsModifiers,
-
-    capacities: character.capacities,
+    characteristics: character.characteristicModifiers,
+    skills: character.skills,
   });
 
   const rollOptions = await dialog.waitForResult();
@@ -109,18 +108,18 @@ export const roll = async (character: CharacterData) => {
 
   const messageMode = rollOptions.messageMode;
 
-  const skillCapacityBonus = calculateSkillCapacityBonus(
+  const characteristicSkillBonus = calculateCharacteristicSkillBonus(
+    rollOptions.characteristic,
     rollOptions.skill,
-    rollOptions.capacity,
-    character.skillsModifiers,
-    character.capacities,
+    character.characteristicModifiers,
+    character.skills,
   );
 
   const formula = buildFormula(
     rollOptions.mode,
     rollOptions.narration,
     rollOptions.bonus,
-    skillCapacityBonus,
+    characteristicSkillBonus,
   );
 
   const flavor = buildRollFlavor(rollOptions, character);
@@ -144,48 +143,29 @@ export const roll = async (character: CharacterData) => {
 
   const templateData = {
     actorName: character.parent.name,
-
     actorImg: character.parent.img,
-
-    capacity: rollOptions.capacity,
-
+    characteristic: rollOptions.characteristic,
     skill: rollOptions.skill,
-
-    modifier: skillCapacityBonus,
-
+    modifier: characteristicSkillBonus,
     narration: rollOptions.narration,
-
     bonus: rollOptions.bonus,
-
     modeLabel: rollOptions.mode,
-
     modeClass: `roll-card__mode--${rollOptions.mode}`,
-
     roll,
     featRoll,
-
     featDie: character.featDice,
-
     featSuccess,
-
     hasDifficulty: true,
-
     difficulty: rollOptions.difficulty,
-
     marginLabel: result.margin,
-
     finalMarginLabel: result.finalMargin,
-
     outcomeLabel: game.i18n.localize(`SEPTARIS.Resolution.${result.outcome}`),
-
     outcomeDetail: featSuccess
       ? game.i18n.localize("SEPTARIS.Roll.FeatSuccess")
       : null,
-
     outcomeClass: `roll-card__outcome--${
       result.success ? "success" : "failure"
     }`,
-
     formula: roll.formula,
   };
 
@@ -196,16 +176,12 @@ export const roll = async (character: CharacterData) => {
 
   const chatData = {
     author: game.user.id,
-
     speaker: ChatMessage.getSpeaker({
       actor: character.parent,
     }),
-
     flavor,
     content,
-
     rolls: [JSON.stringify(roll.toJSON()), JSON.stringify(featRoll.toJSON())],
-
     style: CONST.CHAT_MESSAGE_STYLES.OTHER,
   };
 
@@ -223,9 +199,9 @@ const buildFormula = (
   mode: RollDialogResult["mode"],
   narration: number,
   bonus: number,
-  skillCapacityBonus: number,
+  characteristicSkillBonus: number,
 ): string => {
-  const totalBonus = narration + bonus + skillCapacityBonus;
+  const totalBonus = narration + bonus + characteristicSkillBonus;
 
   let dice = "1d20";
 
@@ -240,17 +216,17 @@ const buildFormula = (
   return `${dice}${formatModifier(totalBonus)}`;
 };
 
-const calculateSkillCapacityBonus = (
+const calculateCharacteristicSkillBonus = (
+  characteristic: string,
   skill: string,
-  capacity: string,
-  skillsModifiers: CharacterData["skillsModifiers"],
-  capacities: CharacterData["capacities"],
+  characteristicModifiers: CharacterData["characteristicModifiers"],
+  skills: CharacterData["skills"],
 ): number => {
-  const skillValue = Reflect.get(skillsModifiers, skill);
+  const characteristicValue = Reflect.get(characteristicModifiers, characteristic);
 
-  const proficiencyValue = Reflect.get(capacities, capacity);
+  const proficiencyValue = Reflect.get(skills, skill);
 
-  const skillModifier = typeof skillValue === "number" ? skillValue : 0;
+  const skillModifier = typeof characteristicValue === "number" ? characteristicValue : 0;
 
   const proficiency =
     typeof proficiencyValue === "number" ? proficiencyValue : 1;

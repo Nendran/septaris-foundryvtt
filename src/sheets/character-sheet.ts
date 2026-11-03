@@ -1,6 +1,6 @@
 import type { HandlebarsRenderOptions } from "@client/applications/api/_module.mjs";
 
-import type { CapacityKey, CharacterData } from "../data/actor/character.js";
+import type { SkillKey, CharacterData } from "../data/actor/character.js";
 
 import { SYSTEM_PATH } from "../utils/constants.js";
 import { roll } from "../utils/rolls.js";
@@ -82,17 +82,17 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
         element.addEventListener("click", async (event) => {
           event.preventDefault();
 
-          const capacityKey = element.dataset.capacity as
-            | CapacityKey
+          const skillKey = element.dataset.capacity as
+            | SkillKey
             | undefined;
 
-          if (!capacityKey) return;
+          if (!skillKey) return;
 
           const newProficiency =
-            this.document.system.getNextCapacityProficiency(capacityKey);
+            this.document.system.getNextSkillProficiency(skillKey);
 
           await this.document.update({
-            [`system.capacities.${capacityKey}`]: newProficiency,
+            [`system.skills.${skillKey}`]: newProficiency,
           });
         });
       });

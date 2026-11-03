@@ -34,7 +34,6 @@ function defineCharacterSchema() {
         min: 0,
         initial: 15,
       }),
-
       max: new fields.NumberField<number, number, true, false, true>({
         required: true,
         nullable: false,
@@ -43,7 +42,6 @@ function defineCharacterSchema() {
         initial: 15,
       }),
     }),
-
     level: new fields.NumberField<number, number, true, false, true>({
       required: true,
       nullable: false,
@@ -52,7 +50,6 @@ function defineCharacterSchema() {
       max: 20,
       initial: 1,
     }),
-
     pe: new fields.NumberField<number, number, true, false, true>({
       required: true,
       nullable: false,
@@ -61,8 +58,7 @@ function defineCharacterSchema() {
       max: 200,
       initial: 10,
     }),
-
-    skills: new fields.SchemaField({
+    characteristics: new fields.SchemaField({
       strength: characteristicField(),
       dexterity: characteristicField(),
       constitution: characteristicField(),
@@ -70,8 +66,7 @@ function defineCharacterSchema() {
       instinct: characteristicField(),
       charisma: characteristicField(),
     }),
-
-    capacities: new fields.SchemaField({
+    skills: new fields.SchemaField({
       acrobatics: proficiencyField(),
       addressing: proficiencyField(),
       athletics: proficiencyField(),
@@ -116,7 +111,7 @@ export type CharacteristicModifiers = Record<CharacteristicKey, number>;
 
 type CharacterProps = ModelPropsFromSchema<CharacterSchema>;
 
-export type CapacityKey = keyof CharacterProps["capacities"];
+export type SkillKey = keyof CharacterProps["skills"];
 
 export type Proficiency = 1 | 2 | 3;
 
@@ -132,16 +127,16 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
 
   declare featDice: CharacterProps["featDice"];
 
+  declare characteristics: CharacterProps["characteristics"];
+
   declare skills: CharacterProps["skills"];
 
-  declare capacities: CharacterProps["capacities"];
-
-  declare skillsModifiers: CharacteristicModifiers;
+  declare characteristicModifiers: CharacteristicModifiers;
 
   static override defineSchema = defineCharacterSchema;
 
   get defense(): number {
-    return 12 + this.skillsModifiers.dexterity;
+    return 12 + this.characteristicModifiers.dexterity;
   }
 
   get speed(): number {
@@ -152,22 +147,22 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
   override prepareDerivedData(): void {
     super.prepareDerivedData();
 
-    this.skillsModifiers = {
-      strength: Math.floor((this.skills.strength - 10) / 2),
-      dexterity: Math.floor((this.skills.dexterity - 10) / 2),
-      constitution: Math.floor((this.skills.constitution - 10) / 2),
-      intelligence: Math.floor((this.skills.intelligence - 10) / 2),
-      instinct: Math.floor((this.skills.instinct - 10) / 2),
-      charisma: Math.floor((this.skills.charisma - 10) / 2),
+    this.characteristicModifiers = {
+      strength: Math.floor((this.characteristics.strength - 10) / 2),
+      dexterity: Math.floor((this.characteristics.dexterity - 10) / 2),
+      constitution: Math.floor((this.characteristics.constitution - 10) / 2),
+      intelligence: Math.floor((this.characteristics.intelligence - 10) / 2),
+      instinct: Math.floor((this.characteristics.instinct - 10) / 2),
+      charisma: Math.floor((this.characteristics.charisma - 10) / 2),
     };
 
-    this.health.max = 15 + this.skillsModifiers.constitution;
+    this.health.max = 15 + this.characteristicModifiers.constitution;
 
     this.health.value = Math.min(this.health.value, this.health.max);
   }
 
-  getNextCapacityProficiency(capacityKey: CapacityKey): Proficiency {
-    const current = this.capacities[capacityKey] as Proficiency;
+  getNextSkillProficiency(skillKey: SkillKey): Proficiency {
+    const current = this.skills[skillKey] as Proficiency;
 
     return current === 3 ? 1 : ((current + 1) as Proficiency);
   }

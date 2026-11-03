@@ -18,12 +18,12 @@ import {
 interface RollDialogConfig {
   title: string;
   skills: Record<string, number>;
-  capacities: Record<string, number>;
+  characteristics: Record<string, number>;
 }
 
 export interface RollDialogResult {
+  characteristic: string;
   skill: string;
-  capacity: string;
   narration: number;
   bonus: number;
   difficulty: number;
@@ -81,22 +81,17 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
 
   static DEFAULT_OPTIONS = {
     tag: "form",
-
     classes: ["septaris", "roll-dialog"],
-
     position: {
       width: 650,
     },
-
     actions: {
       "cancel-roll": this.#handleCancel,
     },
-
     form: {
       closeOnSubmit: true,
       handler: this.#handleSubmit,
     },
-
     window: {
       title: localizeLabel("SEPTARIS.Interface.RollOptions"),
       resizable: false,
@@ -112,8 +107,8 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
   constructor(
     {
       title = localizeLabel("SEPTARIS.Interface.RollOptions"),
+      characteristics = {},
       skills = {},
-      capacities = {},
     }: Partial<RollDialogConfig> = {},
     options = {},
   ) {
@@ -122,7 +117,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
     this.rollConfig = {
       title,
       skills,
-      capacities,
+      characteristics,
     };
   }
 
@@ -179,20 +174,14 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
 
     const result: RollDialogResult = {
       mode: asRollMode(data.mode),
-
+      characteristic: asString(data.characteristic),
       skill: asString(data.skill),
-
-      capacity: asString(data.capacity),
-
       narration: asNumber(data.narration, 0),
-
       bonus: asNumber(data.bonus, 0),
-
       messageMode: normalizeRollMessageMode(
         data.messageMode,
         getDefaultRollMessageMode(),
       ),
-
       difficulty: asNumber(data.difficulty, 10),
     };
 
