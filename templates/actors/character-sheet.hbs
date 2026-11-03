@@ -32,10 +32,10 @@
 
   <hr />
 
-  <section class="sheet-skills">
-    {{#each system.skillsModifiers as |modifier skill|}}
+  <section class="sheet-characteristics">
+    {{#each system.characteristicsModifiers as |modifier skill|}}
     <div>
-      <span>{{localize (concat "SEPTARIS.SKILL." (toUpperCase skill))}}: <input type="text" name="{{ concat "system.skills." skill}}" value="{{ lookup ../system.skills skill}}" data-dtype="Number" /></span>
+      <span>{{localize (concat "SEPTARIS.Characteristics." (toUpperCase skill))}}: <input type="text" name="{{ concat "system.characteristics." skill}}" value="{{ lookup ../system.characteristics skill}}" data-dtype="Number" /></span>
       <span>{{numberFormat modifier sign=true}}</span>
     </div>
     {{/each}}
@@ -56,10 +56,10 @@
 
     {{! Biography Tab }}
     <div class="tab biography {{tabs.resume.cssClass}}" data-group="primary" data-tab="resume" role="tabpanel">
-      <div class="capacities">
-        <h2>{{localize "SEPTARIS.Sheet.Capacities"}}</h2>
-        <div class="capacities-list">
-          {{#each system.capacities as |proficiency name|}}
+      <div class="skills">
+        <h2>{{localize "SEPTARIS.Sheet.Skills"}}</h2>
+        <div class="skills-list">
+          {{#each system.skills as |proficiency name|}}
             <div class="capacity" data-action="update-capacity" data-capacity="{{name}}">
               <span title={{proficiencyName proficiency }}>
                 {{capacityProficiency proficiency}} {{capacityName name}}

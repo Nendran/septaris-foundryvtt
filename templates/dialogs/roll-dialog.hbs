@@ -1,25 +1,25 @@
 <div class="septaris roll-dialog">
       
   <fieldset class="form-group radio-group">
-    <legend>{{localize "SEPTARIS.Sheet.Skills"}}</legend>
-    <div class="roll-skills">
-      {{#each rollConfig.skills as |modifier skill|}}
+    <legend>{{localize "SEPTARIS.Sheet.Characteristics"}}</legend>
+    <div class="roll-characteristics">
+      {{#each rollConfig.characteristics as |modifier characteristic|}}
         <label class="radio">
           <input
             type="radio"
-            name="skill"
-            value="{{skill}}"
+            name="characteristic"
+            value="{{characteristic}}"
           >
-          <span>{{localize (concat "SEPTARIS.SKILL." (toUpperCase skill))}} ({{numberFormat modifier sign=true}})</span>
+          <span>{{localize (concat "SEPTARIS.Characteristics." (toUpperCase characteristic))}} ({{numberFormat modifier sign=true}})</span>
         </label>
       {{/each}}
     </div>
   </fieldset>
 
   <fieldset class="form-group radio-group">
-    <legend>{{localize "SEPTARIS.Sheet.Capacities"}}</legend>
-    <div class="roll-capacities">
-      {{#each rollConfig.capacities as |proficiency name|}}
+    <legend>{{localize "SEPTARIS.Sheet.Skills"}}</legend>
+    <div class="roll-skills">
+      {{#each rollConfig.skills as |proficiency name|}}
         <label class="radio" title={{proficiencyName proficiency }}>
           <input
             type="radio"

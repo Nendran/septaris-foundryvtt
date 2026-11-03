@@ -21,7 +21,7 @@
   font-size: 1.2rem;
 }
 
-.sheet.septaris.actor .sheet-skills {
+.sheet.septaris.actor .sheet-characteristics {
   display: flex;
   justify-content: space-between;
 
@@ -43,26 +43,26 @@
   }
 }
 
-.capacities {
+.skills {
   margin-top: 20px;
 
-  & .capacities-list {
+  & .skills-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, 175px);
 
-    &.capacity {
+    &.skill {
       cursor: pointer;
     }
   }
 }
 
-.roll-skills {
+.roll-characteristics {
   display: grid;
   grid-template-columns: repeat(auto-fill, 185px);
   column-gap: 15px;
 }
 
-.roll-capacities {
+.roll-skills {
   display: grid;
   grid-template-columns: repeat(auto-fill, 190px);
   column-gap: 7px;

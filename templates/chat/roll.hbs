@@ -15,14 +15,14 @@
         </span>
 
         <span class="roll-card__action">
-          {{#if skill}}
-            {{localize (concat "SEPTARIS.SKILL." (toUpperCase skill))}}
+          {{#if characteristic}}
+            {{localize (concat "SEPTARIS.Characteristic." (toUpperCase characteristic))}}
           {{else}}
             Test
           {{/if}}
 
-          {{#if capacity}}
-            · {{capacityName capacity}}
+          {{#if skill}}
+            · {{skillName skill}}
           {{/if}}
         </span>
       </div>

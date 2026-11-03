@@ -1,6 +1,6 @@
 import type { HandlebarsRenderOptions } from "@client/applications/api/_module.mjs";
 
-import type { SkillKey, CharacterData } from "../data/actor/character.js";
+import type { CharacterData, SkillKey } from "../data/actor/character.js";
 
 import { SYSTEM_PATH } from "../utils/constants.js";
 import { roll } from "../utils/rolls.js";
@@ -82,9 +82,7 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
         element.addEventListener("click", async (event) => {
           event.preventDefault();
 
-          const skillKey = element.dataset.capacity as
-            | SkillKey
-            | undefined;
+          const skillKey = element.dataset.capacity as SkillKey | undefined;
 
           if (!skillKey) return;
 

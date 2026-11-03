@@ -1,9 +1,5 @@
-import {
-  capacityName,
-  capacityProficiency,
-  proficiencyName,
-} from "./capacity.js";
 import { localizeLabel } from "./localisation.js";
+import { proficiencyName, skillName, skillProficiency } from "./skill.js";
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("septarisLocalize", (key, fallback) =>
@@ -20,11 +16,9 @@ export function registerHandlebarsHelpers() {
     return str.toUpperCase();
   });
 
-  Handlebars.registerHelper("capacityName", (capacity) =>
-    capacityName(capacity),
-  );
-  Handlebars.registerHelper("capacityProficiency", (proficiency) =>
-    capacityProficiency(proficiency),
+  Handlebars.registerHelper("skillName", (skill) => skillName(skill));
+  Handlebars.registerHelper("skillProficiency", (proficiency) =>
+    skillProficiency(proficiency),
   );
   Handlebars.registerHelper("proficiencyName", (proficiency) =>
     proficiencyName(proficiency),

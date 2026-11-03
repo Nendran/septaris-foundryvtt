@@ -222,11 +222,15 @@ const calculateCharacteristicSkillBonus = (
   characteristicModifiers: CharacterData["characteristicModifiers"],
   skills: CharacterData["skills"],
 ): number => {
-  const characteristicValue = Reflect.get(characteristicModifiers, characteristic);
+  const characteristicValue = Reflect.get(
+    characteristicModifiers,
+    characteristic,
+  );
 
   const proficiencyValue = Reflect.get(skills, skill);
 
-  const skillModifier = typeof characteristicValue === "number" ? characteristicValue : 0;
+  const skillModifier =
+    typeof characteristicValue === "number" ? characteristicValue : 0;
 
   const proficiency =
     typeof proficiencyValue === "number" ? proficiencyValue : 1;
