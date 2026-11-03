@@ -93,6 +93,11 @@ Installez les dépendances :
 npm ci
 ```
 
+Effectuez la compilation : 
+```bash
+npm run build
+```
+
 ### Développement avec Foundry
 
 Pour développer directement dans Foundry, le dépôt peut être cloné dans le dossier des systèmes :
@@ -106,6 +111,8 @@ Par exemple :
 ```bash
 cd /path/to/FoundryVTT/Data/systems
 git clone https://github.com/Nendran/septaris-foundryvtt.git septaris
+npm i
+npm run build:watch
 ```
 
 Redémarrez ensuite Foundry VTT si nécessaire.
