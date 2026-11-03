@@ -10,8 +10,8 @@
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "ci": "npm run typecheck && biome ci .",
-    "test": "node --test",
-    "test:watch": "node --test --watch"
+    "test": "npm run build && node --test",
+    "test:watch": "npm run build && node --test --watch"
   },
   "keywords": [
     "Septaris",
