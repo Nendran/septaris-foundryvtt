@@ -93,7 +93,7 @@ Installez les dépendances :
 npm ci
 ```
 
-Effectuez la compilation : 
+Effectuez la compilation :
 ```bash
 npm run build
 ```

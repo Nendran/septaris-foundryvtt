@@ -1,13 +1,13 @@
 export type ResolutionDegree =
-  | "exceptionalFailure"
-  | "strongFailure"
-  | "mediumFailure"
-  | "weakFailure"
-  | "limit"
-  | "weakSuccess"
-  | "mediumSuccess"
-  | "strongSuccess"
-  | "exceptionalSuccess";
+  | "ExceptionalFailure"
+  | "StrongFailure"
+  | "MediumFailure"
+  | "WeakFailure"
+  | "Limit"
+  | "WeakSuccess"
+  | "MediumSuccess"
+  | "StrongSuccess"
+  | "ExceptionalSuccess";
 
 export type FeatEffect = "rescue" | "double" | null;
 
@@ -23,10 +23,7 @@ export interface ResolutionResult {
   featSuccess: boolean;
   featEffect: FeatEffect;
 
-  outcome: {
-    key: ResolutionDegree;
-    success: boolean;
-  };
+  outcome: string;
 }
 
 export const RESOLUTION_DEGREES = {
