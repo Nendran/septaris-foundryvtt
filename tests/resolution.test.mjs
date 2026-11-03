@@ -5,7 +5,7 @@ import {
   getResolutionDegree,
   RESOLUTION_DEGREES,
   resolveAction,
-} from "../scripts/utils/resolution.mjs";
+} from "../scripts/utils/resolution.js";
 
 describe("resolution degree boundaries", () => {
   const cases = [
