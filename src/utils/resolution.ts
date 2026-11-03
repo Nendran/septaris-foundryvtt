@@ -30,15 +30,15 @@ export interface ResolutionResult {
 }
 
 export const RESOLUTION_DEGREES = {
-  EXCEPTIONAL_FAILURE: "exceptionalFailure",
-  STRONG_FAILURE: "strongFailure",
-  MEDIUM_FAILURE: "mediumFailure",
-  WEAK_FAILURE: "weakFailure",
-  LIMIT: "limit",
-  WEAK_SUCCESS: "weakSuccess",
-  MEDIUM_SUCCESS: "mediumSuccess",
-  STRONG_SUCCESS: "strongSuccess",
-  EXCEPTIONAL_SUCCESS: "exceptionalSuccess",
+  EXCEPTIONAL_FAILURE: "ExceptionalFailure",
+  STRONG_FAILURE: "StrongFailure",
+  MEDIUM_FAILURE: "MediumFailure",
+  WEAK_FAILURE: "WeakFailure",
+  LIMIT: "Limit",
+  WEAK_SUCCESS: "WeakSuccess",
+  MEDIUM_SUCCESS: "MediumSuccess",
+  STRONG_SUCCESS: "StrongSuccess",
+  EXCEPTIONAL_SUCCESS: "ExceptionalSuccess",
 };
 
 export function getResolutionDegree(margin: number): string {

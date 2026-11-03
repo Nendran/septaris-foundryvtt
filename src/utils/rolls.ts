@@ -179,7 +179,7 @@ export const roll = async (character: CharacterData) => {
     outcomeLabel: game.i18n.localize(`SEPTARIS.Resolution.${result.outcome}`),
 
     outcomeDetail: featSuccess
-      ? game.i18n.localize("SEPTARIS.ROLL.FEAT_SUCCESS")
+      ? game.i18n.localize("SEPTARIS.Roll.FeatSuccess")
       : null,
 
     outcomeClass: `roll-card__outcome--${
