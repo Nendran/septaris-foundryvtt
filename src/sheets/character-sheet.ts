@@ -77,12 +77,12 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
     if (partId !== "form") return;
 
     htmlElement
-      .querySelectorAll<HTMLElement>("[data-action='update-capacity']")
+      .querySelectorAll<HTMLElement>("[data-action='update-skill']")
       .forEach((element) => {
         element.addEventListener("click", async (event) => {
           event.preventDefault();
 
-          const skillKey = element.dataset.capacity as SkillKey | undefined;
+          const skillKey = element.dataset.skill as SkillKey | undefined;
 
           if (!skillKey) return;
 
