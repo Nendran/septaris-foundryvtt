@@ -18,7 +18,7 @@ interface RollDialogConfig {
   title: string;
   skills: Record<string, number>;
   characteristics: Record<string, number>;
-  needFeed: boolean;
+  withFeatDie: boolean;
 }
 
 export interface RollDialogResult {
@@ -106,7 +106,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       title = localizeLabel("SEPTARIS.Interface.RollOptions"),
       characteristics = {},
       skills = {},
-      needFeed = true,
+      withFeatDie = true,
     }: Partial<RollDialogConfig> = {},
     options = {},
   ) {
@@ -116,7 +116,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       title,
       skills,
       characteristics,
-      needFeed,
+      withFeatDie,
     };
   }
 

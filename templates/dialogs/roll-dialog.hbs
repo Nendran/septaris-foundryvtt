@@ -9,6 +9,7 @@
             type="radio"
             name="characteristic"
             value="{{characteristic}}"
+            required
           >
           <span>{{localize (concat "SEPTARIS.Characteristics." (toUpperCase characteristic))}} ({{numberFormat modifier sign=true}})</span>
         </label>
@@ -29,6 +30,15 @@
           <span>{{skillProficiency proficiency}} {{skillName name}}</span>
         </label>
       {{/each}}
+      <label class="radio" title={{localize "SEPTARIS.Interface.NoSkill"}}>
+        <input
+          type="radio"
+          name="skill"
+          value=""
+          required
+        >
+        <span>{{localize "SEPTARIS.Interface.NoSkill"}}</span>
+      </label>
     </div>
   </fieldset>
   

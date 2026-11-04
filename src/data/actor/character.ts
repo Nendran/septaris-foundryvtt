@@ -92,6 +92,7 @@ function defineCharacterSchema() {
       max: 10,
       initial: 10,
       step: 2,
+      choices: [6, 8, 10],
     }),
   };
 }

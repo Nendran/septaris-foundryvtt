@@ -69,12 +69,12 @@ export function resolveAction({
 }: {
   total: number;
   target: number;
-  featSuccess?: boolean;
-}) {
+  featSuccess: boolean;
+}): ResolutionResult {
   const margin = total - target;
 
   let finalMargin = margin;
-  let featEffect = null;
+  let featEffect: FeatEffect = null;
 
   if (featSuccess) {
     if (margin < 0) {

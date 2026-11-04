@@ -12,12 +12,12 @@ import {
 
 export const roll = async (
   character: CharacterData,
-  needFeed: boolean = true,
+  withFeatDie: boolean = true,
 ) => {
   const dialog = new SeptarisRollDialog({
     characteristics: character.characteristicsModifiers,
     skills: character.skills,
-    needFeed,
+    withFeatDie,
   });
 
   const rollOptions = await dialog.waitForResult();
@@ -60,7 +60,7 @@ export const roll = async (
 
   let featRoll: Roll | undefined;
   let featSuccess: boolean | undefined;
-  if (needFeed) {
+  if (withFeatDie) {
     // Dé de prouesse
     featRoll = await new Roll(
       `1d${character.featDice}`,
@@ -73,7 +73,7 @@ export const roll = async (
   const result = resolveAction({
     total: roll.total,
     target: rollOptions.difficulty,
-    featSuccess,
+    featSuccess: featSuccess ?? false,
   });
 
   const templateData = {
@@ -87,7 +87,7 @@ export const roll = async (
     modeLabel: rollOptions.mode,
     modeClass: `roll-card__mode--${rollOptions.mode}`,
     roll,
-    needFeed,
+    withFeatDie,
     featRoll,
     featDie: character.featDice,
     featSuccess,
