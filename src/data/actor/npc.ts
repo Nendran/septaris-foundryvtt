@@ -42,6 +42,14 @@ function defineNPCSchema() {
         initial: 15,
       }),
     }),
+    level: new fields.NumberField<number, number, true, false, true>({
+      required: true,
+      nullable: false,
+      integer: true,
+      min: 1,
+      max: 20,
+      initial: 1,
+    }),
     characteristics: new fields.SchemaField({
       strength: characteristicField(),
       dexterity: characteristicField(),
