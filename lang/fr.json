@@ -55,5 +55,6 @@
   "SEPTARIS.Roll.Feat": "Prouesse",
   "SEPTARIS.Roll.FeatSuccess": "Prouesse réussie",
   "SEPTARIS.Roll.NoFeatDie": "Pas de dé de prouesse",
-  "TYPES.Actor.character": "Personnage"
+  "TYPES.Actor.character": "Personnage",
+  "TYPES.Actor.npc": "PNJ"
 }

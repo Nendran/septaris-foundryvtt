@@ -105,6 +105,8 @@ export class NPCData extends foundry.abstract.TypeDataModel<
 > {
   declare health: NPCProps["health"];
 
+  declare level: NPCProps["level"];
+
   declare characteristics: NPCProps["characteristics"];
 
   declare skills: NPCProps["skills"];

@@ -3,7 +3,7 @@ import type { HandlebarsRenderOptions } from "@client/applications/api/_module.m
 import type { NPCData, SkillKey } from "../data/actor/npc.js";
 
 import { SYSTEM_PATH } from "../utils/constants.js";
-import { roll, rollInitiative } from "../utils/rolls.js";
+import { roll } from "../utils/rolls.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
