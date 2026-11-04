@@ -138,7 +138,6 @@ export const roll = async (
 };
 
 export const rollInitiative = async (character: CharacterData) => {
-
   const formula = buildFormula(
     "normal",
     0,
@@ -151,8 +150,8 @@ export const rollInitiative = async (character: CharacterData) => {
 
   return {
     roll,
-  }
-}
+  };
+};
 
 const getRollData = (): Record<string, unknown> => {
   return {};
