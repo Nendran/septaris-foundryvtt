@@ -1,0 +1,60 @@
+<section class="flexcol" autocomplete="off">
+
+  {{! Sheet Header }}
+  <header class="sheet-header">
+    <img
+      class="profile-img"
+      src="{{actor.thumbnail}}"
+      data-edit="img"
+      title="{{actor.name}}"
+      height="100"
+      width="100"
+    />
+    <div class="sheet-header-info">
+      <div>
+        <div>Nom : {{actor.name}}</div>
+        <div>Origine: {{system.origin}}</div>
+      </div>
+      <div>
+        <div>Niveau: {{system.level}}</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet-stats">
+    <span title="Points de Vie">♥: {{system.health.value}}/{{system.health.max}}</span>
+    <span title="Défense">🛡: {{system.defense}}</span>
+    <span title="Vitesse">🏃: {{system.speed}}</span>
+    <button title="Jet" id="roll">🎲 Jet</button>
+  </section>
+
+  <hr />
+
+  <section class="sheet-characteristics">
+    {{#each system.characteristicsModifiers as |modifier skill|}}
+    <div>
+      <span>{{localize (concat "SEPTARIS.Characteristics." (toUpperCase skill))}}: <input type="text" name="{{ concat "system.characteristics." skill}}" value="{{ lookup ../system.characteristics skill}}" data-dtype="Number" /></span>
+      <span>{{numberFormat modifier sign=true}}</span>
+    </div>
+    {{/each}}
+  </section>
+
+  {{! Sheet Body }}
+  <section class="sheet-body">
+
+    <div class="biography {{tabs.resume.cssClass}}" data-group="primary" data-tab="resume" role="tabpanel">
+      <div class="skills">
+        <h2>{{localize "SEPTARIS.Sheet.Skills"}}</h2>
+        <div class="skills-list">
+          {{#each system.skills as |proficiency name|}}
+            <div class="skill" data-action="update-skill" data-skill="{{name}}">
+              <span title={{proficiencyName proficiency }}>
+                {{skillProficiency proficiency}} {{skillName name}}
+              </span>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </section>
+</section>

@@ -39,6 +39,10 @@
       "character": {
         "label": "SEPTARIS.Sheet.Character",
         "htmlFields": ["background.biography"]
+      },
+      "npc": {
+        "label": "SEPTARIS.Sheet.NPC",
+        "htmlFields": ["background.biography"]
       }
     },
     "Item": {}

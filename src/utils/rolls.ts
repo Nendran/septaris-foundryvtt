@@ -1,4 +1,5 @@
 import type { CharacterData } from "../data/actor/character.js";
+import type { NPCData } from "../data/actor/npc.js";
 import {
   type RollDialogResult,
   SeptarisRollDialog,
@@ -11,7 +12,7 @@ import {
 } from "./roll-calculation.js";
 
 export const roll = async (
-  character: CharacterData,
+  character: CharacterData | NPCData,
   withFeatDie: boolean = true,
 ) => {
   const dialog = new SeptarisRollDialog({
@@ -60,7 +61,7 @@ export const roll = async (
 
   let featRoll: Roll | undefined;
   let featSuccess: boolean | undefined;
-  if (withFeatDie) {
+  if (withFeatDie && "featDice" in character) {
     // Dé de prouesse
     featRoll = await new Roll(
       `1d${character.featDice}`,
@@ -89,7 +90,7 @@ export const roll = async (
     roll,
     withFeatDie,
     featRoll,
-    featDie: character.featDice,
+    featDie: "featDice" in character ? character.featDice : undefined,
     featSuccess,
     hasDifficulty: true,
     difficulty: rollOptions.difficulty,
@@ -159,7 +160,7 @@ const getRollData = (): Record<string, unknown> => {
 
 const buildRollFlavor = (
   rollOptions: RollDialogResult,
-  character: CharacterData,
+  character: CharacterData | NPCData,
 ): string => {
   const parts: string[] = [];
 
