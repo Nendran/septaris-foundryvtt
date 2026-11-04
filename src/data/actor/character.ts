@@ -91,6 +91,7 @@ function defineCharacterSchema() {
       min: 6,
       max: 10,
       initial: 10,
+      step: 2,
     }),
   };
 }
