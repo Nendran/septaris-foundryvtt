@@ -11,7 +11,7 @@ import {
   defineSharedSchema,
   type Proficiency,
   type SkillKey,
-} from "./shared-fields";
+} from "./shared-fields.js";
 
 function defineNPCSchema() {
   const sharedSchema = defineSharedSchema();
