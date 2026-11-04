@@ -1,7 +1,7 @@
 import type { HandlebarsRenderOptions } from "@client/applications/api/_module.mjs";
 
-import type { NPCData, SkillKey } from "../data/actor/npc.js";
-
+import type { NPCData } from "../data/actor/npc.js";
+import type { SkillKey } from "../data/actor/shared-fields.js";
 import { SYSTEM_PATH } from "../utils/constants.js";
 import { roll } from "../utils/rolls.js";
 
