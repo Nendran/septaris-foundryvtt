@@ -1,9 +1,11 @@
 import type { ModelPropsFromSchema } from "@common/data/fields.mjs";
 import {
   getCharacteristicModifierFromActor,
+  getDefenseFromActor,
   getMaxHealthFromActor,
   getNextSkillProficiency,
-} from "../../utils/character-calculation";
+  getSpeedFromActor,
+} from "../../utils/character-calculation.js";
 import {
   type characteristicsModifiers,
   defineSharedSchema,
@@ -66,11 +68,11 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
   static override defineSchema = defineCharacterSchema;
 
   get defense(): number {
-    return 12 + this.characteristicsModifiers.dexterity;
+    return getDefenseFromActor(this);
   }
 
   get speed(): number {
-    return 9;
+    return getSpeedFromActor(this);
   }
 
   /** @inheritDoc */
