@@ -23,55 +23,43 @@ export interface ResolutionResult {
   featSuccess: boolean;
   featEffect: FeatEffect;
 
-  outcome: string;
+  outcome: ResolutionDegree;
 }
 
-export const RESOLUTION_DEGREES = {
-  EXCEPTIONAL_FAILURE: "ExceptionalFailure",
-  STRONG_FAILURE: "StrongFailure",
-  MEDIUM_FAILURE: "MediumFailure",
-  WEAK_FAILURE: "WeakFailure",
-  LIMIT: "Limit",
-  WEAK_SUCCESS: "WeakSuccess",
-  MEDIUM_SUCCESS: "MediumSuccess",
-  STRONG_SUCCESS: "StrongSuccess",
-  EXCEPTIONAL_SUCCESS: "ExceptionalSuccess",
-};
-
-export function getResolutionDegree(margin: number): string {
+export function getResolutionDegree(margin: number): ResolutionDegree {
   if (margin <= -16) {
-    return RESOLUTION_DEGREES.EXCEPTIONAL_FAILURE;
+    return "ExceptionalFailure";
   }
 
   if (margin <= -11) {
-    return RESOLUTION_DEGREES.STRONG_FAILURE;
+    return "StrongFailure";
   }
 
   if (margin <= -6) {
-    return RESOLUTION_DEGREES.MEDIUM_FAILURE;
+    return "MediumFailure";
   }
 
   if (margin <= -1) {
-    return RESOLUTION_DEGREES.WEAK_FAILURE;
+    return "WeakFailure";
   }
 
   if (margin === 0) {
-    return RESOLUTION_DEGREES.LIMIT;
+    return "Limit";
   }
 
   if (margin <= 5) {
-    return RESOLUTION_DEGREES.WEAK_SUCCESS;
+    return "WeakSuccess";
   }
 
   if (margin <= 10) {
-    return RESOLUTION_DEGREES.MEDIUM_SUCCESS;
+    return "MediumSuccess";
   }
 
   if (margin <= 15) {
-    return RESOLUTION_DEGREES.STRONG_SUCCESS;
+    return "StrongSuccess";
   }
 
-  return RESOLUTION_DEGREES.EXCEPTIONAL_SUCCESS;
+  return "ExceptionalSuccess";
 }
 
 export function resolveAction({
