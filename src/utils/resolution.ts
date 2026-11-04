@@ -77,7 +77,7 @@ export function getResolutionDegree(margin: number): string {
 export function resolveAction({
   total,
   target,
-  featSuccess = false,
+  featSuccess,
 }: {
   total: number;
   target: number;

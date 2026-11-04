@@ -3,7 +3,7 @@ import type { HandlebarsRenderOptions } from "@client/applications/api/_module.m
 import type { CharacterData, SkillKey } from "../data/actor/character.js";
 
 import { SYSTEM_PATH } from "../utils/constants.js";
-import { roll } from "../utils/rolls.js";
+import { roll, rollInitiative } from "../utils/rolls.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -101,6 +101,13 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
         event.preventDefault();
 
         await roll(this.document.system);
+      });
+    htmlElement
+      .querySelector<HTMLElement>("#initiative")
+      ?.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        await rollInitiative(this.document.system);
       });
   }
 }

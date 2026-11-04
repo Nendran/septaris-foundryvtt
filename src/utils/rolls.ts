@@ -10,10 +10,14 @@ import {
   calculateCharacteristicSkillBonus,
 } from "./roll-calculation.js";
 
-export const roll = async (character: CharacterData) => {
+export const roll = async (
+  character: CharacterData,
+  needFeed: boolean = true,
+) => {
   const dialog = new SeptarisRollDialog({
     characteristics: character.characteristicsModifiers,
     skills: character.skills,
+    needFeed,
   });
 
   const rollOptions = await dialog.waitForResult();
@@ -54,13 +58,17 @@ export const roll = async (character: CharacterData) => {
   // Jet principal
   const roll = await new Roll(formula, getRollData()).evaluate();
 
-  // Dé de prouesse
-  const featRoll = await new Roll(
-    `1d${character.featDice}`,
-    getRollData(),
-  ).evaluate();
+  let featRoll: Roll | undefined;
+  let featSuccess: boolean | undefined;
+  if (needFeed) {
+    // Dé de prouesse
+    featRoll = await new Roll(
+      `1d${character.featDice}`,
+      getRollData(),
+    ).evaluate();
 
-  const featSuccess = Number(featRoll.total) === character.featDice;
+    featSuccess = Number(featRoll.total) === character.featDice;
+  }
 
   const result = resolveAction({
     total: roll.total,
@@ -79,6 +87,7 @@ export const roll = async (character: CharacterData) => {
     modeLabel: rollOptions.mode,
     modeClass: `roll-card__mode--${rollOptions.mode}`,
     roll,
+    needFeed,
     featRoll,
     featDie: character.featDice,
     featSuccess,
@@ -101,6 +110,12 @@ export const roll = async (character: CharacterData) => {
     templateData,
   );
 
+  const rolls = [JSON.stringify(roll.toJSON())];
+
+  if (featRoll) {
+    rolls.push(JSON.stringify(featRoll.toJSON()));
+  }
+
   const chatData = {
     author: game.user.id,
     speaker: ChatMessage.getSpeaker({
@@ -108,7 +123,7 @@ export const roll = async (character: CharacterData) => {
     }),
     flavor,
     content,
-    rolls: [JSON.stringify(roll.toJSON()), JSON.stringify(featRoll.toJSON())],
+    rolls,
     style: CONST.CHAT_MESSAGE_STYLES.OTHER,
   };
 
@@ -121,6 +136,23 @@ export const roll = async (character: CharacterData) => {
     featRoll,
   };
 };
+
+export const rollInitiative = async (character: CharacterData) => {
+
+  const formula = buildFormula(
+    "normal",
+    0,
+    0,
+    character.characteristicsModifiers.dexterity,
+  );
+
+  // Jet principal
+  const roll = await new Roll(formula, getRollData()).evaluate();
+
+  return {
+    roll,
+  }
+}
 
 const getRollData = (): Record<string, unknown> => {
   return {};

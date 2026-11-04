@@ -76,16 +76,16 @@
       </strong>
     </div>
 
-
     {{!-- Dé de prouesse --}}
     <div
       class="roll-card__result roll-card__result--feat
         {{#if featSuccess}}roll-card__result--success{{/if}}"
     >
       <span class="roll-card__result-label">
-        Prouesse
+        {{localize "SEPTARIS.Roll.Feat"}}
       </span>
 
+      {{#if featRoll}}
       <div class="roll-card__feat-value">
         <strong class="roll-card__result-value">
           {{featRoll.total}}
@@ -104,6 +104,11 @@
           </span>
         {{/if}}
       </div>
+      {{#else}}
+        <span class="roll-card__result-value">
+          {{localize "SEPTARIS.Roll.NoFeatDie"}}
+        </span>
+      {{/if}}
     </div>
 
   </section>

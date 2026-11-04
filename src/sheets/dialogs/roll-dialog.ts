@@ -12,12 +12,13 @@ import {
 } from "../../utils/chat-message-modes.js";
 import { SYSTEM_PATH } from "../../utils/constants.js";
 import { localizeLabel } from "../../utils/localisation.js";
-import { ROLL_MODES, RollMode } from "../../utils/roll-calculation.js";
+import { ROLL_MODES, type RollMode } from "../../utils/roll-calculation.js";
 
 interface RollDialogConfig {
   title: string;
   skills: Record<string, number>;
   characteristics: Record<string, number>;
+  needFeed: boolean;
 }
 
 export interface RollDialogResult {
@@ -105,6 +106,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       title = localizeLabel("SEPTARIS.Interface.RollOptions"),
       characteristics = {},
       skills = {},
+      needFeed = true,
     }: Partial<RollDialogConfig> = {},
     options = {},
   ) {
@@ -114,6 +116,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       title,
       skills,
       characteristics,
+      needFeed,
     };
   }
 
