@@ -102,12 +102,5 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
 
         await roll(this.document.system);
       });
-    htmlElement
-      .querySelector<HTMLElement>("#initiative")
-      ?.addEventListener("click", async (event) => {
-        event.preventDefault();
-
-        await rollInitiative(this.document.system);
-      });
   }
 }
