@@ -24,6 +24,6 @@
     "@biomejs/biome": "2.6.4",
     "@dfreds/foundry-types": "^14.369.1",
     "@types/showdown": "^2.0.6",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   }
 }
