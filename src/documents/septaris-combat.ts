@@ -1,5 +1,9 @@
 import type Collection from "@common/utils/collection.mjs";
 import {
+  initializeActionResources,
+  refreshActionResources,
+} from "../utils/action-resources.js";
+import {
   type ConflictState,
   CURRENT_PHASE_FLAG,
   getNextCycle,
@@ -26,6 +30,9 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       return this;
     }
     await rollConflictInitiative(this);
+    for (const combatant of this.combatants) {
+      await initializeActionResources(combatant);
+    }
     await this.setFlag(SCOPE_FLAG, CURRENT_PHASE_FLAG, 1);
     return super.startCombat();
   }
@@ -35,10 +42,10 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
 
     const nextPhase = getNextPhase(data);
 
-    await this.update({
-      round: nextPhase.nextCycle,
-      "flags.septaris.currentPhase": nextPhase.nextPhase,
-    });
+    await this.applyConflictTransition(
+      nextPhase.nextCycle,
+      nextPhase.nextPhase,
+    );
 
     return this;
   }
@@ -48,10 +55,10 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
 
     const prevPhase = getPreviousPhase(data);
 
-    await this.update({
-      round: prevPhase.prevCycle,
-      "flags.septaris.currentPhase": prevPhase.prevPhase,
-    });
+    await this.applyConflictTransition(
+      prevPhase.prevCycle,
+      prevPhase.prevPhase,
+    );
 
     return this;
   }
@@ -61,10 +68,10 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
 
     const nextPhase = getNextCycle(data);
 
-    await this.update({
-      round: nextPhase.nextCycle,
-      "flags.septaris.currentPhase": nextPhase.nextPhase,
-    });
+    await this.applyConflictTransition(
+      nextPhase.nextCycle,
+      nextPhase.nextPhase,
+    );
 
     return this;
   }
@@ -74,10 +81,10 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
 
     const prevPhase = getPreviousCycle(data);
 
-    await this.update({
-      round: prevPhase.prevCycle,
-      "flags.septaris.currentPhase": prevPhase.prevPhase,
-    });
+    await this.applyConflictTransition(
+      prevPhase.prevCycle,
+      prevPhase.prevPhase,
+    );
 
     return this;
   }
@@ -124,5 +131,36 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       priorityCamp,
       otherCamp,
     };
+  }
+
+  async applyConflictTransition(
+    destinationCycle: number,
+    destinationPhase: Phase,
+  ) {
+    if (
+      destinationPhase < 1 ||
+      destinationPhase > 4 ||
+      !Number.isInteger(destinationPhase)
+    ) {
+      throw new Error(
+        "SEPTARIS | Invalid current phase. Must be between 1 and 4.",
+      );
+    }
+    if (destinationCycle < 1 || !Number.isInteger(destinationCycle)) {
+      throw new Error(
+        "SEPTARIS | Invalid current cycle. Must be a positive integer.",
+      );
+    }
+
+    if (destinationCycle > this.round) {
+      for (const combatant of this.combatants) {
+        await refreshActionResources(combatant, destinationCycle);
+      }
+    }
+
+    await this.update({
+      round: destinationCycle,
+      "flags.septaris.currentPhase": destinationPhase,
+    });
   }
 }
