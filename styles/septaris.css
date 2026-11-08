@@ -75,3 +75,22 @@
     margin-top: 20px;
   }
 }
+
+.septaris-prepare-conflict {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: calc(100% - 16px);
+  margin: 8px auto;
+  padding: 8px 12px;
+
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.septaris-prepare-conflict:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

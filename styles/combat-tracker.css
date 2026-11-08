@@ -1,0 +1,318 @@
+.septaris-conflict-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border-light-primary);
+}
+
+.septaris-conflict-header h3 {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Cycle et phase */
+
+.septaris-conflict-indicators {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.septaris-conflict-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 5px;
+}
+
+.septaris-conflict-indicator span {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.septaris-conflict-indicator strong {
+  font-size: 1.4rem;
+}
+
+/* Indicateur des quatre phases */
+
+.septaris-conflict-phases {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.septaris-conflict-phases span {
+  text-align: center;
+  padding: 6px;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.septaris-conflict-phases span.active {
+  opacity: 1;
+  font-weight: bold;
+  border-color: var(--color-border-highlight);
+  background: rgba(120, 120, 120, 0.2);
+}
+
+/* Camp actif */
+
+.septaris-conflict-active-camp {
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 5px;
+  background: rgba(120, 120, 120, 0.15);
+}
+
+/* Conteneur des camps */
+
+.septaris-tracker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px;
+}
+
+/* Camp */
+
+.septaris-camp {
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+/* Camp actif */
+
+.septaris-camp.is-active {
+  border: 2px solid var(--color-border-highlight);
+}
+
+/* En-tête du camp */
+
+.septaris-camp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(120, 120, 120, 0.12);
+}
+
+.septaris-camp.is-active .septaris-camp-header {
+  background: rgba(120, 120, 120, 0.24);
+}
+
+.septaris-camp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.septaris-camp-title h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* État du camp */
+
+.septaris-camp-status,
+.septaris-camp-priority {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+
+.septaris-camp-status {
+  font-weight: bold;
+  border: 1px solid var(--color-border-highlight);
+}
+
+.septaris-camp-priority {
+  opacity: 0.7;
+}
+
+/* Liste des combattants */
+
+.septaris-camp-members {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.septaris-camp-members .combatant {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(120, 120, 120, 0.15);
+}
+
+.septaris-camp-members .combatant:last-child {
+  border-bottom: none;
+}
+
+.septaris-camp-members .token-image {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.septaris-camp-members .token-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.septaris-camp-members .token-name .name {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.septaris-camp-members .combatant-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Effets actifs */
+
+.septaris-combatant-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.septaris-combatant-effects img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* Initiative avant conflit */
+
+.septaris-combatant-initiative {
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+/* Ressources d'action */
+
+.septaris-action-resources {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.septaris-action-resource {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  min-width: 0;
+  padding: 6px 2px;
+
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 5px;
+
+  background: rgba(120, 120, 120, 0.12);
+  transition: opacity 0.2s ease;
+}
+
+.septaris-action-resource i {
+  font-size: 0.95rem;
+}
+
+.septaris-action-resource .resource-label {
+  font-size: 0.65rem;
+  line-height: 1.2;
+}
+
+.septaris-action-resource .resource-value {
+  font-size: 0.75rem;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ressource épuisée */
+
+.septaris-action-resource.is-empty {
+  opacity: 0.35;
+  background: rgba(120, 120, 120, 0.05);
+}
+
+.septaris-action-resource.is-empty i {
+  filter: grayscale(1);
+}
+
+/* Pas de comportement interactif pour le moment */
+
+.septaris-action-resource {
+  cursor: default;
+  user-select: none;
+}
+
+/* Ressources interactives */
+
+button.septaris-action-resource {
+  appearance: none;
+  width: 100%;
+  height: auto;
+
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+
+  user-select: none;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+button.septaris-action-resource:hover {
+  opacity: 1;
+  border-color: var(--color-border-highlight);
+  background: rgba(120, 120, 120, 0.3);
+}
+
+button.septaris-action-resource.is-empty {
+  opacity: 0.35;
+}
+
+button.septaris-action-resource.is-empty:hover {
+  opacity: 0.75;
+}
+
+button.septaris-action-resource:focus-visible {
+  outline: 2px solid var(--color-border-highlight);
+  outline-offset: 2px;
+}
+
+button.septaris-action-resource:disabled {
+  cursor: wait;
+  pointer-events: none;
+}
