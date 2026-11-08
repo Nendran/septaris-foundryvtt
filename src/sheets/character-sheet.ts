@@ -115,10 +115,7 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
 
           const { value, max } = this.document.system.health;
 
-          const newValue = Math.max(
-            0,
-            Math.min(max, value + delta),
-          );
+          const newValue = Math.max(0, Math.min(max, value + delta));
 
           if (newValue === value) return;
 

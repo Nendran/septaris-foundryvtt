@@ -77,8 +77,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
   static override defineSchema = defineCharacterSchema;
 
   get defense(): number {
-  return getDefenseFromActor(this) + this.defenseBonus;
-}
+    return getDefenseFromActor(this) + this.defenseBonus;
+  }
 
   get speed(): number {
     return getSpeedFromActor(this);
