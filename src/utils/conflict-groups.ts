@@ -1,4 +1,5 @@
 import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "./conflict.js";
+import { localizeLabel } from "./localisation.js";
 
 export type ConflictCamp = {
   id: string;
@@ -87,8 +88,8 @@ export async function initializeConflictGroups(
   }
 
   await combat.createEmbeddedDocuments("CombatantGroup", [
-    { name: "Camp A", type: "base" },
-    { name: "Camp B", type: "base" },
+    { name: localizeLabel("SEPTARIS.Conflit.Camps.Adventurers"), type: "base" },
+    { name: localizeLabel("SEPTARIS.Conflit.Camps.Opponent"), type: "base" },
   ]);
 
   return combat.groups.contents;

@@ -3,6 +3,8 @@
   "SEPTARIS.Sheet.NPC": "PNJ",
   "SEPTARIS.Sheet.Characteristics": "Caractéristiques",
   "SEPTARIS.Sheet.Skills": "Compétences",
+  "SEPTARIS.Conflit.Camps.Adventurers": "Aventuriers",
+  "SEPTARIS.Conflit.Camps.Opponent": "Adversaires",
   "SEPTARIS.Characteristics.STRENGTH": "Force",
   "SEPTARIS.Characteristics.DEXTERITY": "Dextérité",
   "SEPTARIS.Characteristics.CONSTITUTION": "Constitution",

@@ -131,7 +131,15 @@ export class SeptarisConflitSetupDialog extends HandlebarsApplicationMixin(
           )?.id || null,
       });
     }
-    const playerCampId = getPlayerCampId(this.combat);
+    let playerCampId = getPlayerCampId(this.combat);
+
+    if (!playerCampId) {
+      playerCampId =
+        camps.find(
+          (camp) =>
+            camp.name === localizeLabel("SEPTARIS.Conflit.Camps.Adventurers"),
+        )?.id || null;
+    }
 
     return {
       ...context,
