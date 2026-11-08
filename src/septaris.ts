@@ -51,7 +51,12 @@ Hooks.once("init", () => {
   registerHandlebarsHelpers();
 
   Hooks.on("renderCombatTracker", (app, element) => {
-    if (!(app instanceof foundry.applications.sidebar.tabs.CombatTracker && element instanceof HTMLElement)) {
+    if (
+      !(
+        app instanceof foundry.applications.sidebar.tabs.CombatTracker &&
+        element instanceof HTMLElement
+      )
+    ) {
       throw new Error("SEPTARIS | renderCombatTracker | Arguments invalids");
     }
     element.querySelector(".septaris-prepare-conflict")?.remove();
