@@ -6,14 +6,10 @@ import { SeptarisCharacterSheet } from "./sheets/character-sheet.js";
 import { SeptarisCombatTracker } from "./sheets/combat-tracker.js";
 import { SeptarisConflitSetupDialog } from "./sheets/dialogs/conflit-setup-dialog.js";
 import { SeptarisNPCSheet } from "./sheets/npc-sheet.js";
+import { RESOURCES_ACTION_FLAG, SCOPE_FLAG } from "./utils/conflict.js";
 import { SYSTEM_ID } from "./utils/constants.js";
 import { registerHandlebarsHelpers } from "./utils/handlebars.js";
 import { localizeLabel } from "./utils/localisation.js";
-
-import {
-  RESOURCES_ACTION_FLAG,
-  SCOPE_FLAG,
-} from "./utils/conflict.js";
 
 Hooks.once("init", () => {
   CONFIG.Actor.dataModels.character = CharacterData;
@@ -123,11 +119,7 @@ Hooks.once("init", () => {
   });
 
   Hooks.on("updateCombatant", (combatant, changed) => {
-    if (
-      !(
-        combatant instanceof foundry.documents.Combatant
-      )
-    ) {
+    if (!(combatant instanceof foundry.documents.Combatant)) {
       throw new Error("SEPTARIS | updateCombatant | Arguments invalids");
     }
     const flags = (

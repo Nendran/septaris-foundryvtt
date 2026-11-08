@@ -7,8 +7,8 @@ import type { HandlebarsRenderOptions } from "@client/applications/api/_module.m
 
 import { SeptarisCombatDocument } from "../documents/septaris-combat.js";
 import {
-  getActionResources,
   consumeActionResource,
+  getActionResources,
   restoreActionResource,
 } from "../utils/action-resources.js";
 
@@ -17,8 +17,8 @@ import {
   getActiveCamp,
   type Phase,
   PRIORITY_CAMP_FLAG,
-  SCOPE_FLAG,
   RESOURCES_ACTION_FLAG,
+  SCOPE_FLAG,
 } from "../utils/conflict.js";
 
 import { getConflictCamps } from "../utils/conflict-groups.js";
@@ -163,12 +163,8 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
               combatant.getFlag(SCOPE_FLAG, RESOURCES_ACTION_FLAG) !== undefined
             ) {
               try {
-                const {
-                  major,
-                  minor,
-                  movement,
-                  reaction,
-                } = getActionResources(combatant);
+                const { major, minor, movement, reaction } =
+                  getActionResources(combatant);
 
                 resources = {
                   major,
@@ -318,14 +314,14 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
     event.preventDefault();
     event.stopPropagation();
 
+    // biome-ignore lint/complexity/noThisInStatic: Foundry ApplicationV2 binds `this` to the application instance.
     const combat = this.viewed;
 
     if (!(combat instanceof SeptarisCombatDocument)) return;
     if (!combat.started) return;
 
-    const combatantId = target.closest<HTMLElement>(
-      "[data-combatant-id]",
-    )?.dataset.combatantId;
+    const combatantId = target.closest<HTMLElement>("[data-combatant-id]")
+      ?.dataset.combatantId;
 
     const resource = target.dataset.resource;
 
@@ -362,9 +358,7 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
       return;
     }
 
-    const button = target instanceof HTMLButtonElement
-      ? target
-      : null;
+    const button = target instanceof HTMLButtonElement ? target : null;
 
     if (button?.disabled) return;
     if (button) button.disabled = true;
