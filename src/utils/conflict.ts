@@ -5,7 +5,7 @@ export const CURRENT_PHASE_FLAG = "currentPhase";
 export const PRIORITY_CAMP_FLAG = "priorityCamp";
 export const PLAYER_CAMP_ID_FLAG = "playerCampId";
 
-type ConflictState = {
+export type ConflictState = {
   currentPhase: Phase;
   currentCycle: number;
   priorityCamp: string;
@@ -15,6 +15,12 @@ type ConflictState = {
 type NextPhaseResult = {
   nextPhase: Phase;
   nextCycle: number;
+  activeCamp: string;
+};
+
+type PrevPhaseResult = {
+  prevPhase: Phase;
+  prevCycle: number;
   activeCamp: string;
 };
 
@@ -55,6 +61,62 @@ export function getNextPhase(options: ConflictState): NextPhaseResult {
       nextPhase === 1 ? options.currentCycle + 1 : options.currentCycle,
     activeCamp: getActiveCamp({
       currentPhase: nextPhase,
+      priorityCamp: options.priorityCamp,
+      otherCamp: options.otherCamp,
+    }),
+  };
+}
+
+export function getPreviousPhase(options: ConflictState): PrevPhaseResult {
+  validateConflictState(options);
+
+  if (options.currentCycle === 1 && options.currentPhase === 1) {
+    throw new Error("Impossible to move to previous Phase");
+  }
+
+  const prevPhase: Phase =
+    options.currentPhase === 1 ? 4 : ((options.currentPhase - 1) as Phase);
+  return {
+    prevPhase: prevPhase,
+    prevCycle:
+      prevPhase === 4 ? options.currentCycle - 1 : options.currentCycle,
+    activeCamp: getActiveCamp({
+      currentPhase: prevPhase,
+      priorityCamp: options.priorityCamp,
+      otherCamp: options.otherCamp,
+    }),
+  };
+}
+
+export function getNextCycle(options: ConflictState): NextPhaseResult {
+  validateConflictState(options);
+
+  const nextPhase: Phase = 1;
+  return {
+    nextPhase: nextPhase,
+    nextCycle: options.currentCycle + 1,
+    activeCamp: getActiveCamp({
+      currentPhase: nextPhase,
+      priorityCamp: options.priorityCamp,
+      otherCamp: options.otherCamp,
+    }),
+  };
+}
+
+export function getPreviousCycle(options: ConflictState): PrevPhaseResult {
+  validateConflictState(options);
+
+  if (options.currentCycle === 1) {
+    throw new Error("Impossible to move to previous Cycle");
+  }
+
+  const prevPhase: Phase = 1;
+
+  return {
+    prevPhase: prevPhase,
+    prevCycle: options.currentCycle - 1,
+    activeCamp: getActiveCamp({
+      currentPhase: prevPhase,
       priorityCamp: options.priorityCamp,
       otherCamp: options.otherCamp,
     }),

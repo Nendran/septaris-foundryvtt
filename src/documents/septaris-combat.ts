@@ -1,7 +1,11 @@
 import type Collection from "@common/utils/collection.mjs";
 import {
+  type ConflictState,
   CURRENT_PHASE_FLAG,
+  getNextCycle,
   getNextPhase,
+  getPreviousCycle,
+  getPreviousPhase,
   type Phase,
   PRIORITY_CAMP_FLAG,
   SCOPE_FLAG,
@@ -27,9 +31,60 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
   }
 
   override async nextTurn(): Promise<this> {
-    console.log("SEPTARIS | Appel à la fonction 'nextTurn'");
+    const data = this.validateTurnData();
+
+    const nextPhase = getNextPhase(data);
+
+    await this.update({
+      round: nextPhase.nextCycle,
+      "flags.septaris.currentPhase": nextPhase.nextPhase,
+    });
+
+    return this;
+  }
+
+  override async previousTurn(): Promise<this> {
+    const data = this.validateTurnData();
+
+    const prevPhase = getPreviousPhase(data);
+
+    await this.update({
+      round: prevPhase.prevCycle,
+      "flags.septaris.currentPhase": prevPhase.prevPhase,
+    });
+
+    return this;
+  }
+
+  override async nextRound(): Promise<this> {
+    const data = this.validateTurnData();
+
+    const nextPhase = getNextCycle(data);
+
+    await this.update({
+      round: nextPhase.nextCycle,
+      "flags.septaris.currentPhase": nextPhase.nextPhase,
+    });
+
+    return this;
+  }
+
+  override async previousRound(): Promise<this> {
+    const data = this.validateTurnData();
+
+    const prevPhase = getPreviousCycle(data);
+
+    await this.update({
+      round: prevPhase.prevCycle,
+      "flags.septaris.currentPhase": prevPhase.prevPhase,
+    });
+
+    return this;
+  }
+
+  validateTurnData(): ConflictState {
     if (!this.started) {
-      return this;
+      throw new Error("Combat not started");
     }
 
     validateConflictGroups(this);
@@ -63,18 +118,11 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       throw new Error("Priority Camp is not valid");
     }
 
-    const nextPhase = getNextPhase({
+    return {
       currentCycle,
       currentPhase,
       priorityCamp,
       otherCamp,
-    });
-
-    await this.update({
-      round: nextPhase.nextCycle,
-      "flags.septaris.currentPhase": nextPhase.nextPhase,
-    });
-
-    return this;
+    };
   }
 }
