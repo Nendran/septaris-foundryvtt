@@ -23,7 +23,8 @@
     "styles/septaris.css",
     "styles/fonts.css",
     "styles/chat.css",
-    "styles/conflit-setup-dialog.css"
+    "styles/conflit-setup-dialog.css",
+    "styles/combat-tracker.css"
   ],
   "languages": [
     {

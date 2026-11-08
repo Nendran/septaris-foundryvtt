@@ -25,6 +25,14 @@ interface SeptarisConfig {
   Combat: {
     documentClass: typeof foundry.documents.Combat;
   };
+
+  ui: {
+    combat:  new (
+      ...args: ConstructorParameters<
+        typeof foundry.applications.sidebar.tabs.CombatTracker
+      >
+    ) => foundry.applications.sidebar.tabs.CombatTracker;
+  }
 }
 
 declare global {

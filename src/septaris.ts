@@ -8,12 +8,16 @@ import { SeptarisNPCSheet } from "./sheets/npc-sheet.js";
 import { SYSTEM_ID } from "./utils/constants.js";
 import { registerHandlebarsHelpers } from "./utils/handlebars.js";
 import { localizeLabel } from "./utils/localisation.js";
+import { SeptarisCombatTracker } from "./sheets/combat-tracker.js";
 
 Hooks.once("init", () => {
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.npc = NPCData;
 
   CONFIG.Combat.documentClass = SeptarisCombatDocument;
+
+  CONFIG.Combat.documentClass = SeptarisCombatDocument;
+  CONFIG.ui.combat = SeptarisCombatTracker;
 
   const { DocumentSheetConfig } = foundry.applications.apps;
 

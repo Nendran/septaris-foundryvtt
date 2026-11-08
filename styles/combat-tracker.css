@@ -1,0 +1,74 @@
+.septaris-conflict-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--color-border-light-primary);
+}
+
+.septaris-conflict-header h3 {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Cycle et phase */
+
+.septaris-conflict-indicators {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.septaris-conflict-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 5px;
+}
+
+.septaris-conflict-indicator span {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.septaris-conflict-indicator strong {
+  font-size: 1.4rem;
+}
+
+/* Indicateur des quatre phases */
+
+.septaris-conflict-phases {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.septaris-conflict-phases span {
+  text-align: center;
+  padding: 6px;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.septaris-conflict-phases span.active {
+  opacity: 1;
+  font-weight: bold;
+  border-color: var(--color-border-highlight);
+  background: rgba(120, 120, 120, 0.2);
+}
+
+/* Camp actif */
+
+.septaris-conflict-active-camp {
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 5px;
+  background: rgba(120, 120, 120, 0.15);
+}
