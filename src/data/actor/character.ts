@@ -38,6 +38,13 @@ function defineCharacterSchema() {
       step: 2,
       choices: [6, 8, 10],
     }),
+    defenseBonus: new fields.NumberField<number, number, true, false, true>({
+      required: true,
+      nullable: false,
+      integer: true,
+      min: 0,
+      initial: 0,
+    }),
   };
 }
 
@@ -65,11 +72,13 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
 
   declare characteristicsModifiers: characteristicsModifiers;
 
+  declare defenseBonus: CharacterProps["defenseBonus"];
+
   static override defineSchema = defineCharacterSchema;
 
   get defense(): number {
-    return getDefenseFromActor(this);
-  }
+  return getDefenseFromActor(this) + this.defenseBonus;
+}
 
   get speed(): number {
     return getSpeedFromActor(this);

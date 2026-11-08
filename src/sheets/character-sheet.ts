@@ -102,5 +102,30 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
 
         await roll(this.document.system);
       });
+
+    htmlElement
+      .querySelectorAll<HTMLButtonElement>("[data-health-delta]")
+      .forEach((button) => {
+        button.addEventListener("click", async (event) => {
+          event.preventDefault();
+
+          const delta = Number(button.dataset.healthDelta);
+
+          if (delta !== -1 && delta !== 1) return;
+
+          const { value, max } = this.document.system.health;
+
+          const newValue = Math.max(
+            0,
+            Math.min(max, value + delta),
+          );
+
+          if (newValue === value) return;
+
+          await this.document.update({
+            "system.health.value": newValue,
+          });
+        });
+      });
   }
 }

@@ -94,3 +94,38 @@
   opacity: 0.5;
   cursor: wait;
 }
+
+.sheet.septaris.actor .sheet-stats {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.septaris-health,
+.septaris-defense {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.septaris-health input,
+.septaris-defense input {
+  width: 54px;
+  min-width: 0;
+  text-align: center;
+}
+
+.septaris-health button {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.septaris-defense label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+}

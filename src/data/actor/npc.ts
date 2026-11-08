@@ -1,8 +1,6 @@
 import type { ModelPropsFromSchema } from "@common/data/fields.mjs";
 import {
   getCharacteristicModifierFromActor,
-  getDefenseFromActor,
-  getMaxHealthFromActor,
   getNextSkillProficiency,
   getSpeedFromActor,
 } from "../../utils/character-calculation.js";
@@ -18,6 +16,13 @@ function defineNPCSchema() {
 
   return {
     ...sharedSchema,
+    defense: new fields.NumberField<number, number, true, false, true>({
+      required: true,
+      nullable: false,
+      integer: true,
+      min: 0,
+      initial: 12,
+    }),
   };
 }
 
@@ -26,6 +31,8 @@ export type NPCSchema = ReturnType<typeof defineNPCSchema>;
 type ActorParent = InstanceType<typeof Actor.implementation>;
 
 type NPCProps = ModelPropsFromSchema<NPCSchema>;
+
+const fields = foundry.data.fields;
 
 export class NPCData extends foundry.abstract.TypeDataModel<
   ActorParent,
@@ -37,15 +44,13 @@ export class NPCData extends foundry.abstract.TypeDataModel<
 
   declare characteristics: NPCProps["characteristics"];
 
+  declare defense: NPCProps["defense"];
+
   declare skills: NPCProps["skills"];
 
   declare characteristicsModifiers: characteristicsModifiers;
 
   static override defineSchema = defineNPCSchema;
-
-  get defense(): number {
-    return getDefenseFromActor(this);
-  }
 
   get speed(): number {
     return getSpeedFromActor(this);
@@ -56,8 +61,6 @@ export class NPCData extends foundry.abstract.TypeDataModel<
     super.prepareDerivedData();
 
     this.characteristicsModifiers = getCharacteristicModifierFromActor(this);
-
-    this.health.max = getMaxHealthFromActor(this);
 
     this.health.value = Math.min(this.health.value, this.health.max);
   }

@@ -22,8 +22,46 @@
   </header>
 
   <section class="sheet-stats">
-    <span title="Points de Vie">♥: {{system.health.value}}/{{system.health.max}}</span>
-    <span title="Défense">🛡: {{system.defense}}</span>
+    <div class="septaris-health">
+      <span>♥ PV</span>
+
+      <button type="button" data-health-delta="-1">−</button>
+
+      <input
+        type="number"
+        name="system.health.value"
+        value="{{system.health.value}}"
+        min="0"
+        max="{{system.health.max}}"
+        step="1"
+      />
+
+      <button type="button" data-health-delta="1">+</button>
+
+      <span>/</span>
+
+      <input
+        type="number"
+        name="system.health.max"
+        value="{{system.health.max}}"
+        min="0"
+        step="1"
+        title="PV maximum"
+      />
+    </div>
+
+    <div class="septaris-defense">
+      <label>
+        🛡 Défense
+        <input
+          type="number"
+          name="system.defense"
+          value="{{system.defense}}"
+          min="0"
+          step="1"
+        />
+      </label>
+    </div>
     <span title="Vitesse">🏃: {{system.speed}}</span>
     <button title="Jet" id="roll">🎲 Jet</button>
   </section>
