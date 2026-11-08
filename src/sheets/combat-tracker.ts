@@ -6,6 +6,11 @@ import type {
 import type { HandlebarsRenderOptions } from "@client/applications/api/_module.mjs";
 
 import { SeptarisCombatDocument } from "../documents/septaris-combat.js";
+import {
+  getActionResources,
+  consumeActionResource,
+  restoreActionResource,
+} from "../utils/action-resources.js";
 
 import {
   CURRENT_PHASE_FLAG,
@@ -13,9 +18,15 @@ import {
   type Phase,
   PRIORITY_CAMP_FLAG,
   SCOPE_FLAG,
+  RESOURCES_ACTION_FLAG,
 } from "../utils/conflict.js";
 
 import { getConflictCamps } from "../utils/conflict-groups.js";
+
+type TrackerActionResources = Pick<
+  ReturnType<typeof getActionResources>,
+  "major" | "minor" | "movement" | "reaction"
+>;
 
 interface TrackerTurn {
   id: string;
@@ -33,6 +44,7 @@ interface TrackerTurn {
       name: string;
     }[];
   };
+  resources?: TrackerActionResources;
 }
 
 interface TrackerCamp {
@@ -56,6 +68,14 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
     tracker: {
       ...super.PARTS.tracker,
       template: "systems/septaris/templates/combat/tracker.hbs",
+    },
+  };
+
+  static override DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+    actions: {
+      ...super.DEFAULT_OPTIONS.actions,
+      toggleActionResource: this.#handleToggleActionResource,
     },
   };
 
@@ -131,10 +151,45 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
             .filter((value) => value && value !== "active")
             .join(" ");
 
+          let resources: TrackerActionResources | undefined;
+
+          // Les ressources sont visibles par le MJ
+          // et par les propriétaires du combattant.
+          if (game.user?.isGM || turn.isOwner) {
+            const combatant = combat.combatants.get(member.id);
+
+            if (
+              combatant &&
+              combatant.getFlag(SCOPE_FLAG, RESOURCES_ACTION_FLAG) !== undefined
+            ) {
+              try {
+                const {
+                  major,
+                  minor,
+                  movement,
+                  reaction,
+                } = getActionResources(combatant);
+
+                resources = {
+                  major,
+                  minor,
+                  movement,
+                  reaction,
+                };
+              } catch (error) {
+                console.error(
+                  `SEPTARIS | Invalid resources for ${combatant.name}`,
+                  error,
+                );
+              }
+            }
+          }
+
           return [
             {
               ...turn,
               css,
+              resources,
             },
           ];
         });
@@ -253,5 +308,83 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
     summary.append(campElement);
 
     header.append(summary);
+  }
+
+  static async #handleToggleActionResource(
+    this: SeptarisCombatTracker,
+    event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const combat = this.viewed;
+
+    if (!(combat instanceof SeptarisCombatDocument)) return;
+    if (!combat.started) return;
+
+    const combatantId = target.closest<HTMLElement>(
+      "[data-combatant-id]",
+    )?.dataset.combatantId;
+
+    const resource = target.dataset.resource;
+
+    if (!combatantId) return;
+
+    if (
+      resource !== "major" &&
+      resource !== "minor" &&
+      resource !== "movement" &&
+      resource !== "reaction"
+    ) {
+      throw new Error("SEPTARIS | Invalid action resource");
+    }
+
+    const combatant = combat.combatants.get(combatantId);
+    if (!combatant) return;
+
+    const user = game.user;
+    if (!user) return;
+
+    // Le MJ peut modifier tous les combattants.
+    // Un joueur doit posséder le combattant.
+    if (!user.isGM && !combatant.isOwner) {
+      ui.notifications.warn(
+        "Vous ne pouvez pas modifier les ressources de ce combattant.",
+      );
+      return;
+    }
+
+    if (!combatant.canUserModify(user, "update")) {
+      ui.notifications.warn(
+        "Vous ne disposez pas des permissions nécessaires.",
+      );
+      return;
+    }
+
+    const button = target instanceof HTMLButtonElement
+      ? target
+      : null;
+
+    if (button?.disabled) return;
+    if (button) button.disabled = true;
+
+    try {
+      const resources = getActionResources(combatant);
+
+      if (resources[resource] > 0) {
+        await consumeActionResource(combatant, resource);
+      } else {
+        await restoreActionResource(combatant, resource);
+      }
+    } catch (error) {
+      console.error("SEPTARIS | Action resource error:", error);
+
+      ui.notifications.error(
+        error instanceof Error ? error.message : String(error),
+      );
+    } finally {
+      if (button) button.disabled = false;
+    }
   }
 }

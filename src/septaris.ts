@@ -10,6 +10,11 @@ import { SYSTEM_ID } from "./utils/constants.js";
 import { registerHandlebarsHelpers } from "./utils/handlebars.js";
 import { localizeLabel } from "./utils/localisation.js";
 
+import {
+  RESOURCES_ACTION_FLAG,
+  SCOPE_FLAG,
+} from "./utils/conflict.js";
+
 Hooks.once("init", () => {
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.npc = NPCData;
@@ -115,5 +120,31 @@ Hooks.once("init", () => {
 
     // Placement au-dessus des commandes natives
     footer.before(button);
+  });
+
+  Hooks.on("updateCombatant", (combatant, changed) => {
+    if (
+      !(
+        combatant instanceof foundry.documents.Combatant
+      )
+    ) {
+      throw new Error("SEPTARIS | updateCombatant | Arguments invalids");
+    }
+    const flags = (
+      changed as {
+        flags?: Record<string, Record<string, unknown>>;
+      }
+    ).flags?.[SCOPE_FLAG];
+
+    if (!flags || !Object.hasOwn(flags, RESOURCES_ACTION_FLAG)) {
+      return;
+    }
+
+    const tracker = ui.combat;
+
+    if (!(tracker instanceof SeptarisCombatTracker)) return;
+    if (tracker.viewed?.id !== combatant.parent?.id) return;
+
+    void tracker.render({ parts: ["tracker"] });
   });
 });

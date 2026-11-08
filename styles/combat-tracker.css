@@ -214,3 +214,105 @@
   flex-shrink: 0;
   font-weight: bold;
 }
+
+/* Ressources d'action */
+
+.septaris-action-resources {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.septaris-action-resource {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  min-width: 0;
+  padding: 6px 2px;
+
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 5px;
+
+  background: rgba(120, 120, 120, 0.12);
+  transition: opacity 0.2s ease;
+}
+
+.septaris-action-resource i {
+  font-size: 0.95rem;
+}
+
+.septaris-action-resource .resource-label {
+  font-size: 0.65rem;
+  line-height: 1.2;
+}
+
+.septaris-action-resource .resource-value {
+  font-size: 0.75rem;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ressource épuisée */
+
+.septaris-action-resource.is-empty {
+  opacity: 0.35;
+  background: rgba(120, 120, 120, 0.05);
+}
+
+.septaris-action-resource.is-empty i {
+  filter: grayscale(1);
+}
+
+/* Pas de comportement interactif pour le moment */
+
+.septaris-action-resource {
+  cursor: default;
+  user-select: none;
+}
+
+/* Ressources interactives */
+
+button.septaris-action-resource {
+  appearance: none;
+  width: 100%;
+  height: auto;
+
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+
+  user-select: none;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+button.septaris-action-resource:hover {
+  opacity: 1;
+  border-color: var(--color-border-highlight);
+  background: rgba(120, 120, 120, 0.3);
+}
+
+button.septaris-action-resource.is-empty {
+  opacity: 0.35;
+}
+
+button.septaris-action-resource.is-empty:hover {
+  opacity: 0.75;
+}
+
+button.septaris-action-resource:focus-visible {
+  outline: 2px solid var(--color-border-highlight);
+  outline-offset: 2px;
+}
+
+button.septaris-action-resource:disabled {
+  cursor: wait;
+  pointer-events: none;
+}

@@ -57,6 +57,61 @@
 
       </div>
 
+      {{!-- Ressources d'action Septaris --}}
+      {{#if resources}}
+        <div class="septaris-action-resources">
+
+          <button
+            type="button"
+            class="septaris-action-resource {{#unless resources.movement}}is-empty{{/unless}}"
+            data-action="toggleActionResource"
+            data-resource="movement"
+            title="Déplacement : cliquer pour consommer ou restaurer"
+          >
+            <i class="fa-solid fa-person-walking"></i>
+            <span class="resource-label">Dépl.</span>
+            <span class="resource-value">{{resources.movement}}/1</span>
+          </button>
+
+          <button
+            type="button"
+            class="septaris-action-resource {{#unless resources.major}}is-empty{{/unless}}"
+            data-action="toggleActionResource"
+            data-resource="major"
+            title="Action majeure : cliquer pour consommer ou restaurer"
+          >
+            <i class="fa-solid fa-hand-fist"></i>
+            <span class="resource-label">Maj.</span>
+            <span class="resource-value">{{resources.major}}/1</span>
+          </button>
+
+          <button
+            type="button"
+            class="septaris-action-resource {{#unless resources.minor}}is-empty{{/unless}}"
+            data-action="toggleActionResource"
+            data-resource="minor"
+            title="Action mineure : cliquer pour consommer ou restaurer"
+          >
+            <i class="fa-solid fa-hand"></i>
+            <span class="resource-label">Min.</span>
+            <span class="resource-value">{{resources.minor}}/1</span>
+          </button>
+
+          <button
+            type="button"
+            class="septaris-action-resource {{#unless resources.reaction}}is-empty{{/unless}}"
+            data-action="toggleActionResource"
+            data-resource="reaction"
+            title="Réaction : cliquer pour consommer ou restaurer"
+          >
+            <i class="fa-solid fa-shield"></i>
+            <span class="resource-label">Réac.</span>
+            <span class="resource-value">{{resources.reaction}}/1</span>
+          </button>
+
+        </div>
+      {{/if}}
+
       {{#if effects.icons.length}}
         <div class="septaris-combatant-effects">
           {{#each effects.icons}}
