@@ -1,0 +1,103 @@
+
+<div class="conflit-setup">
+
+  <section class="conflit-setup__section">
+    <h2 class="conflit-setup__title">
+      <i class="fa-solid fa-users"></i>
+      Répartition des participants
+    </h2>
+
+    <p class="conflit-setup__description">
+      Attribuez chaque participant à l'un des deux camps.
+    </p>
+
+    <div class="conflit-setup__combatants">
+      {{#each combatants as |combatant|}}
+        <div class="conflit-setup__combatant">
+
+          <label
+            for="camp-{{combatant.id}}"
+            class="conflit-setup__combatant-name"
+          >
+            {{combatant.name}}
+          </label>
+
+          <select
+            id="camp-{{combatant.id}}"
+            name="camp-{{combatant.id}}"
+            class="conflit-setup__select"
+          >
+            <option
+              value=""
+              {{#unless combatant.campId}}selected{{/unless}}
+            >
+              Non affecté
+            </option>
+
+            {{selectOptions
+              ../camps
+              selected=combatant.campId
+              valueAttr="id"
+              labelAttr="name"
+            }}
+          </select>
+
+        </div>
+      {{else}}
+        <p class="conflit-setup__empty">
+          Aucun participant dans ce conflit.
+        </p>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="conflit-setup__section">
+    <h2 class="conflit-setup__title">
+      <i class="fa-solid fa-flag"></i>
+      Camp des joueurs
+    </h2>
+
+    <p class="conflit-setup__description">
+      Ce camp bénéficie de la priorité en cas d'égalité
+      lors des jets d'initiative.
+    </p>
+
+    <fieldset class="conflit-setup__player-camps">
+      <legend class="sr-only">Camp des joueurs</legend>
+
+      {{#each camps as |camp|}}
+        <label class="conflit-setup__radio-option">
+          <input
+            type="radio"
+            name="playerCampId"
+            value="{{camp.id}}"
+            {{#if (eq ../playerCampId camp.id)}}checked{{/if}}
+            required
+          />
+
+          <span>{{camp.name}}</span>
+        </label>
+      {{/each}}
+    </fieldset>
+  </section>
+
+  <footer class="conflit-setup__actions">
+    <button
+      type="button"
+      data-action="cancel-conflit"
+      class="conflit-setup__cancel"
+    >
+      <i class="fa-solid fa-xmark"></i>
+      Annuler
+    </button>
+
+    <button
+      type="submit"
+      class="conflit-setup__submit"
+    >
+      <i class="fa-solid fa-floppy-disk"></i>
+      Enregistrer
+    </button>
+  </footer>
+
+</div>

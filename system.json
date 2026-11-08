@@ -19,7 +19,12 @@
   ],
   "socket": true,
   "esmodules": ["scripts/septaris.js"],
-  "styles": ["styles/septaris.css", "styles/fonts.css", "styles/chat.css"],
+  "styles": [
+    "styles/septaris.css",
+    "styles/fonts.css",
+    "styles/chat.css",
+    "styles/conflit-setup-dialog.css"
+  ],
   "languages": [
     {
       "lang": "fr",

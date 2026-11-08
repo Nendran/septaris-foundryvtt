@@ -33,6 +33,6 @@ export function getDefenseFromActor(actor: SharedProps): number {
   return 12 + getCharacteristicModifier(actor.characteristics.dexterity);
 }
 
-export function getSpeedFromActor(actor: SharedProps): number {
+export function getSpeedFromActor(_actor: SharedProps): number {
   return 9;
 }
