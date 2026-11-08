@@ -1,0 +1,144 @@
+{{!-- Entrée individuelle d'un combattant --}}
+{{#*inline "combatantEntry"}}
+  <li
+    class="combatant {{css}}"
+    data-combatant-id="{{id}}"
+    data-action="activateCombatant"
+  >
+    <img
+      class="token-image"
+      src="{{img}}"
+      alt="{{name}}"
+      loading="lazy"
+    />
+
+    <div class="token-name">
+      <strong class="name">{{name}}</strong>
+
+      <div class="combatant-controls flexrow">
+
+        {{#if user.isGM}}
+          <button
+            type="button"
+            class="inline-control combatant-control icon fa-solid fa-eye-slash {{#if hidden}}active{{/if}}"
+            data-action="toggleHidden"
+            data-tooltip
+            aria-label="{{localize 'COMBAT.ToggleVis'}}"
+          ></button>
+
+          <button
+            type="button"
+            class="inline-control combatant-control icon fa-solid fa-skull {{#if isDefeated}}active{{/if}}"
+            data-action="toggleDefeated"
+            data-tooltip
+            aria-label="{{localize 'COMBAT.ToggleDead'}}"
+          ></button>
+        {{/if}}
+
+        {{#if canPing}}
+          <button
+            type="button"
+            class="inline-control combatant-control icon fa-solid fa-bullseye-arrow"
+            data-action="pingCombatant"
+            data-tooltip
+            aria-label="{{localize 'COMBATANT.Ping'}}"
+          ></button>
+        {{/if}}
+
+        {{#unless user.isGM}}
+          <button
+            type="button"
+            class="inline-control combatant-control icon fa-solid fa-arrows-to-eye"
+            data-action="panToCombatant"
+            data-tooltip
+            aria-label="{{localize 'COMBATANT.PanTo'}}"
+          ></button>
+        {{/unless}}
+
+      </div>
+
+      {{#if effects.icons.length}}
+        <div class="septaris-combatant-effects">
+          {{#each effects.icons}}
+            <img
+              src="{{img}}"
+              alt="{{name}}"
+              title="{{name}}"
+            />
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+
+    {{!-- Initiative avant le lancement du conflit --}}
+    {{#unless @root.septarisCamps}}
+      <div class="septaris-combatant-initiative">
+        {{#if initiative}}
+          {{initiative}}
+        {{else}}
+          {{#if isOwner}}
+            <button
+              type="button"
+              class="inline-control icon fa-solid fa-dice-d20"
+              data-action="rollInitiative"
+              data-tooltip
+              aria-label="{{localize 'COMBAT.RollInitiative'}}"
+            ></button>
+          {{/if}}
+        {{/if}}
+      </div>
+    {{/unless}}
+
+  </li>
+{{/inline}}
+
+<div class="combat-tracker septaris-tracker">
+
+  {{#if septarisCamps}}
+
+    {{#each septarisCamps as |camp|}}
+      <section
+        class="septaris-camp {{#if camp.active}}is-active{{/if}}"
+        data-camp-id="{{camp.id}}"
+      >
+
+        <header class="septaris-camp-header">
+          <div class="septaris-camp-title">
+            <i class="fa-solid fa-users"></i>
+            <h3>{{camp.name}}</h3>
+          </div>
+
+          {{#if camp.active}}
+            <span class="septaris-camp-status">
+              Actif
+            </span>
+          {{else}}
+            {{#if camp.priority}}
+              <span class="septaris-camp-priority">
+                Prioritaire
+              </span>
+            {{/if}}
+          {{/if}}
+        </header>
+
+        <ol class="combat-tracker plain septaris-camp-members">
+          {{#each camp.members as |member|}}
+            {{> combatantEntry member user=@root.user}}
+          {{/each}}
+        </ol>
+
+      </section>
+    {{/each}}
+
+  {{else}}
+
+    {{!-- Affichage classique avant le conflit --}}
+    <ol class="combat-tracker plain septaris-camp-members">
+      {{#each turns as |turn|}}
+        {{> combatantEntry turn user=@root.user}}
+      {{/each}}
+    </ol>
+
+  {{/if}}
+
+</div>

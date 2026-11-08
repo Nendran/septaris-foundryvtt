@@ -27,12 +27,12 @@ interface SeptarisConfig {
   };
 
   ui: {
-    combat:  new (
+    combat: new (
       ...args: ConstructorParameters<
         typeof foundry.applications.sidebar.tabs.CombatTracker
       >
     ) => foundry.applications.sidebar.tabs.CombatTracker;
-  }
+  };
 }
 
 declare global {
