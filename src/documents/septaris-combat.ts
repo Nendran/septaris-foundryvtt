@@ -19,6 +19,10 @@ import {
   validateConflictGroups,
 } from "../utils/conflict-groups.js";
 import { rollConflictInitiative } from "../utils/conflict-initiative.js";
+import {
+  createPhaseTimerState,
+  PHASE_TIMER_FLAG,
+} from "../utils/phase-timer.js";
 
 export class SeptarisCombatDocument extends foundry.documents.Combat {
   declare readonly groups: Collection<
@@ -34,7 +38,16 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       await initializeActionResources(combatant);
     }
     await this.setFlag(SCOPE_FLAG, CURRENT_PHASE_FLAG, 1);
-    return super.startCombat();
+
+    const startedCombat = await super.startCombat();
+
+    await this.setFlag(
+      SCOPE_FLAG,
+      PHASE_TIMER_FLAG,
+      createPhaseTimerState(1, 1),
+    );
+
+    return startedCombat;
   }
 
   override async nextTurn(): Promise<this> {
@@ -161,6 +174,10 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
     await this.update({
       round: destinationCycle,
       "flags.septaris.currentPhase": destinationPhase,
+      [`flags.${SCOPE_FLAG}.${PHASE_TIMER_FLAG}`]: createPhaseTimerState(
+        destinationCycle,
+        destinationPhase,
+      ),
     });
   }
 }

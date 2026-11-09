@@ -316,3 +316,66 @@ button.septaris-action-resource:disabled {
   cursor: wait;
   pointer-events: none;
 }
+
+/* Chronomètre des phases */
+
+.septaris-phase-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px;
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+
+  background: rgba(120, 120, 120, 0.1);
+}
+
+.septaris-phase-timer-display {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.septaris-phase-timer-status {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.septaris-phase-timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.septaris-phase-timer-controls button {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.septaris-phase-timer-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Décompte actif */
+
+.septaris-phase-timer.is-running {
+  border-color: var(--color-border-highlight);
+}
+
+/* Temps écoulé */
+
+.septaris-phase-timer.is-expired {
+  border-color: #b94141;
+  background: rgba(185, 65, 65, 0.12);
+}
+
+.septaris-phase-timer.is-expired .septaris-phase-timer-display {
+  color: #db6262;
+}

@@ -23,6 +23,15 @@ import {
 
 import { getConflictCamps } from "../utils/conflict-groups.js";
 
+import {
+  createPhaseTimerState,
+  getPhaseTimerState,
+  getRemainingTimeMs,
+  isPlayerPhase,
+  type PhaseTimerState,
+  updatePhaseTimer,
+} from "../utils/phase-timer.js";
+
 type TrackerActionResources = Pick<
   ReturnType<typeof getActionResources>,
   "major" | "minor" | "movement" | "reaction"
@@ -76,8 +85,29 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
     actions: {
       ...super.DEFAULT_OPTIONS.actions,
       toggleActionResource: this.#handleToggleActionResource,
+      editPhaseTimer: this.#handlePhaseTimerAction,
     },
   };
+
+  private phaseTimerInterval: ReturnType<typeof setInterval> | null = null;
+
+  private stopPhaseTimerInterval(): void {
+    if (this.phaseTimerInterval !== null) {
+      clearInterval(this.phaseTimerInterval);
+      this.phaseTimerInterval = null;
+    }
+  }
+
+  private formatPhaseTimer(milliseconds: number): string {
+    const seconds = Math.ceil(milliseconds / 1000);
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds,
+    ).padStart(2, "0")}`;
+  }
 
   protected override async _prepareTrackerContext(
     context: ApplicationRenderContext,
@@ -208,6 +238,7 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
     options: ApplicationRenderOptions,
   ): Promise<void> {
     await super._onRender(context, options);
+    this.stopPhaseTimerInterval();
 
     this.element.querySelector(".septaris-conflict-header")?.remove();
 
@@ -303,7 +334,101 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
 
     summary.append(campElement);
 
-    header.append(summary);
+    // Chronomètre uniquement pendant les phases des joueurs.
+    if (isPlayerPhase(combat)) {
+      const timerContainer = document.createElement("section");
+      timerContainer.className = "septaris-phase-timer";
+
+      const timerDisplay = document.createElement("strong");
+      timerDisplay.className = "septaris-phase-timer-display";
+
+      const timerStatus = document.createElement("span");
+      timerStatus.className = "septaris-phase-timer-status";
+
+      timerContainer.append(timerDisplay, timerStatus);
+
+      let toggleButton: HTMLButtonElement | null = null;
+
+      // Seul le MJ peut contrôler le chronomètre.
+      if (game.user?.isGM) {
+        const controls = document.createElement("div");
+        controls.className = "septaris-phase-timer-controls";
+
+        toggleButton = document.createElement("button");
+        toggleButton.type = "button";
+        toggleButton.dataset.action = "editPhaseTimer";
+        toggleButton.dataset.timerCommand = "toggle";
+
+        const resetButton = document.createElement("button");
+        resetButton.type = "button";
+        resetButton.dataset.action = "editPhaseTimer";
+        resetButton.dataset.timerCommand = "reset";
+        resetButton.textContent = "Réinitialiser";
+
+        controls.append(toggleButton, resetButton);
+        timerContainer.append(controls);
+      }
+
+      summary.append(timerContainer);
+
+      const updateDisplay = () => {
+        if (!this.rendered || !timerDisplay.isConnected) {
+          this.stopPhaseTimerInterval();
+          return;
+        }
+
+        const currentCombat = this.viewed;
+
+        if (!(currentCombat instanceof SeptarisCombatDocument)) {
+          return;
+        }
+
+        const currentPhase = currentCombat.getFlag(
+          SCOPE_FLAG,
+          CURRENT_PHASE_FLAG,
+        );
+
+        const savedState = getPhaseTimerState(currentCombat);
+
+        const state: PhaseTimerState =
+          savedState?.cycle === currentCombat.round &&
+          savedState.phase === currentPhase
+            ? savedState
+            : createPhaseTimerState(currentCombat.round, currentPhase as Phase);
+
+        const remainingMs = getRemainingTimeMs(state);
+
+        timerDisplay.textContent = this.formatPhaseTimer(remainingMs);
+
+        const expired = remainingMs <= 0;
+        const running = state.startedAt !== null && !expired;
+
+        timerContainer.classList.toggle("is-expired", expired);
+        timerContainer.classList.toggle("is-running", running);
+
+        if (expired) {
+          timerStatus.textContent = "Temps écoulé";
+        } else if (running) {
+          timerStatus.textContent = "En cours";
+        } else {
+          timerStatus.textContent = "En pause";
+        }
+
+        if (toggleButton) {
+          toggleButton.textContent = running ? "Pause" : "Démarrer";
+          toggleButton.disabled = expired;
+        }
+      };
+
+      header.append(summary);
+
+      // Actualisation locale : aucune écriture réseau.
+      this.phaseTimerInterval = setInterval(updateDisplay, 500);
+
+      updateDisplay();
+    } else {
+      header.append(summary);
+    }
   }
 
   static async #handleToggleActionResource(
@@ -373,6 +498,44 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
       }
     } catch (error) {
       console.error("SEPTARIS | Action resource error:", error);
+
+      ui.notifications.error(
+        error instanceof Error ? error.message : String(error),
+      );
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  static async #handlePhaseTimerAction(
+    this: SeptarisCombatTracker,
+    event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // biome-ignore lint/complexity/noThisInStatic: Foundry binds this to the application.
+    const combat = this.viewed;
+
+    if (!(combat instanceof SeptarisCombatDocument)) return;
+    if (!game.user?.isGM) return;
+
+    const action = target.dataset.timerCommand;
+
+    if (action !== "toggle" && action !== "reset") {
+      return;
+    }
+
+    const button = target instanceof HTMLButtonElement ? target : null;
+
+    if (button?.disabled) return;
+    if (button) button.disabled = true;
+
+    try {
+      await updatePhaseTimer(combat, action);
+    } catch (error) {
+      console.error("SEPTARIS | Phase timer error:", error);
 
       ui.notifications.error(
         error instanceof Error ? error.message : String(error),

@@ -139,4 +139,22 @@ Hooks.once("init", () => {
 
     void tracker.render({ parts: ["tracker"] });
   });
+
+  Hooks.on("updateCombat", (combat) => {
+    if (!(combat instanceof SeptarisCombatDocument)) {
+      return;
+    }
+
+    const tracker = ui.combat;
+
+    if (!(tracker instanceof SeptarisCombatTracker)) {
+      return;
+    }
+
+    if (tracker.viewed?.id !== combat.id) {
+      return;
+    }
+
+    void tracker.render();
+  });
 });
