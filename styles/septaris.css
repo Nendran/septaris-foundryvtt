@@ -43,6 +43,12 @@
   }
 }
 
+.sheet.septaris.actor .profile-img {
+  cursor: pointer;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
 .skills {
   margin-top: 20px;
 
