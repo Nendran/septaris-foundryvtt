@@ -87,7 +87,7 @@
 .septaris-camp {
   border: 1px solid var(--color-border-light-primary);
   border-radius: 6px;
-  overflow: hidden;
+  overflow-y: scroll;
   transition: border-color 0.2s ease;
 }
 
