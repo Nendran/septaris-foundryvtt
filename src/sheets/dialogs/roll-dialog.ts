@@ -4,15 +4,15 @@ import type {
 } from "@client/applications/_types.mjs";
 import type { HandlebarsRenderOptions } from "@client/applications/api/_module.mjs";
 import type FormDataExtended from "@client/applications/ux/form-data-extended.mjs";
+import type { ChatMessageMode } from "@client/config.mjs";
+import { SYSTEM_PATH } from "../../foundry/constants.js";
+import { localizeLabel } from "../../foundry/localisation.js";
 import {
-  type ChatMessageMode,
   getDefaultRollMessageMode,
   getRollMessageModeChoices,
   normalizeRollMessageMode,
-} from "../../utils/chat-message-modes.js";
-import { SYSTEM_PATH } from "../../utils/constants.js";
-import { localizeLabel } from "../../utils/localisation.js";
-import { ROLL_MODES, type RollMode } from "../../utils/roll-calculation.js";
+} from "../../foundry/rolls/chat-message-modes.js";
+import { ROLL_MODES, type RollMode } from "../../rules/resolution/types.js";
 
 interface RollDialogConfig {
   title: string;

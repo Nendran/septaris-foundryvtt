@@ -1,17 +1,14 @@
 import type { ModelPropsFromSchema } from "@common/data/fields.mjs";
-import {
-  getCharacteristicModifierFromActor,
-  getDefenseFromActor,
-  getMaxHealthFromActor,
-  getNextSkillProficiency,
-  getSpeedFromActor,
-} from "../../utils/character-calculation.js";
-import {
-  type characteristicsModifiers,
-  defineSharedSchema,
-  type Proficiency,
-  type SkillKey,
-} from "./shared-fields.js";
+import { calculateCharacteristicModifierFromActor } from "../../rules/character/characteristics.js";
+import { calculateDefense } from "../../rules/character/defense.js";
+import { calculateMaxHealth } from "../../rules/character/health.js";
+import { calculateNextSkillProficiency } from "../../rules/character/skill.js";
+import { calculateSpeed } from "../../rules/character/speed.js";
+import type {
+  characteristicsModifiers,
+  Proficiency,
+} from "../../rules/character/types.js";
+import { defineSharedSchema, type SkillKey } from "./shared-fields.js";
 
 const fields = foundry.data.fields;
 
@@ -77,25 +74,35 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
   static override defineSchema = defineCharacterSchema;
 
   get defense(): number {
-    return getDefenseFromActor(this) + this.defenseBonus;
+    return calculateDefense(
+      this.characteristics.dexterity,
+      this.characteristics.constitution,
+    );
   }
 
   get speed(): number {
-    return getSpeedFromActor(this);
+    return calculateSpeed();
   }
 
   /** @inheritDoc */
   override prepareDerivedData(): void {
     super.prepareDerivedData();
 
-    this.characteristicsModifiers = getCharacteristicModifierFromActor(this);
+    this.characteristicsModifiers = calculateCharacteristicModifierFromActor(
+      this.characteristics.strength,
+      this.characteristics.dexterity,
+      this.characteristics.constitution,
+      this.characteristics.intelligence,
+      this.characteristics.instinct,
+      this.characteristics.charisma,
+    );
 
-    this.health.max = getMaxHealthFromActor(this);
+    this.health.max = calculateMaxHealth(this.characteristics.constitution);
 
     this.health.value = Math.min(this.health.value, this.health.max);
   }
 
   getNextSkillProficiency(skillKey: SkillKey): Proficiency {
-    return getNextSkillProficiency(this.skills[skillKey] as Proficiency);
+    return calculateNextSkillProficiency(this.skills[skillKey] as Proficiency);
   }
 }

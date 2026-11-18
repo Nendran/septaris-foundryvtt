@@ -2,18 +2,6 @@ import type { ModelPropsFromSchema } from "@common/data/fields.mjs";
 
 const fields = foundry.data.fields;
 
-export type CharacteristicKey =
-  | "strength"
-  | "dexterity"
-  | "constitution"
-  | "intelligence"
-  | "instinct"
-  | "charisma";
-
-export type characteristicsModifiers = Record<CharacteristicKey, number>;
-
-export type Proficiency = 1 | 2 | 3;
-
 type SharedSchema = ReturnType<typeof defineSharedSchema>;
 
 export type SharedProps = ModelPropsFromSchema<SharedSchema>;

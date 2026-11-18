@@ -11,9 +11,9 @@ import {
   getPlayerCampId,
   initializeConflictGroups,
   setPlayerCampId,
-} from "../../utils/conflict-groups.js";
-import { SYSTEM_PATH } from "../../utils/constants.js";
-import { localizeLabel } from "../../utils/localisation.js";
+} from "../../foundry/combat/conflict-groups.js";
+import { SYSTEM_PATH } from "../../foundry/constants.js";
+import { localizeLabel } from "../../foundry/localisation.js";
 
 interface ConflitSetupConfig {
   title: string;

@@ -1,4 +1,4 @@
-import { localizeLabel } from "./localisation.js";
+import { localizeLabel } from "../foundry/localisation.js";
 
 export function skillName(skill: string) {
   const localized = localizeLabel(`SEPTARIS.Skills.${skill.toUpperCase()}`);

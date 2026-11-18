@@ -2,27 +2,24 @@ import type Collection from "@common/utils/collection.mjs";
 import {
   initializeActionResources,
   refreshActionResources,
-} from "../utils/action-resources.js";
+} from "../foundry/combat/action-resources.js";
 import {
-  type ConflictState,
+  getConflictCamps,
+  validateConflictGroups,
+} from "../foundry/combat/conflict-groups.js";
+import { rollConflictInitiative } from "../foundry/combat/conflict-initiative.js";
+import { PHASE_TIMER_FLAG } from "../foundry/combat/constants.js";
+import {
   CURRENT_PHASE_FLAG,
   getNextCycle,
   getNextPhase,
   getPreviousCycle,
   getPreviousPhase,
-  type Phase,
   PRIORITY_CAMP_FLAG,
   SCOPE_FLAG,
-} from "../utils/conflict.js";
-import {
-  getConflictCamps,
-  validateConflictGroups,
-} from "../utils/conflict-groups.js";
-import { rollConflictInitiative } from "../utils/conflict-initiative.js";
-import {
-  createPhaseTimerState,
-  PHASE_TIMER_FLAG,
-} from "../utils/phase-timer.js";
+} from "../rules/conflit/phases.js";
+import { createPhaseTimerState } from "../rules/conflit/timer.js";
+import type { ConflictState, Phase } from "../rules/conflit/types.js";
 
 export class SeptarisCombatDocument extends foundry.documents.Combat {
   declare readonly groups: Collection<

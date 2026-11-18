@@ -1,5 +1,5 @@
-import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "./conflict.js";
-import { localizeLabel } from "./localisation.js";
+import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "../../rules/conflit/phases";
+import { localizeLabel } from "../localisation";
 
 export type ConflictCamp = {
   id: string;

@@ -2,8 +2,8 @@ import type { HandlebarsRenderOptions } from "@client/applications/api/_module.m
 
 import type { CharacterData } from "../data/actor/character.js";
 import type { SkillKey } from "../data/actor/shared-fields.js";
-import { SYSTEM_PATH } from "../utils/constants.js";
-import { roll } from "../utils/rolls.js";
+import { SYSTEM_PATH } from "../foundry/constants.js";
+import { roll } from "../foundry/rolls/rolls.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 

@@ -10,27 +10,25 @@ import {
   consumeActionResource,
   getActionResources,
   restoreActionResource,
-} from "../utils/action-resources.js";
-
+} from "../foundry/combat/action-resources.js";
+import { getConflictCamps } from "../foundry/combat/conflict-groups.js";
+import {
+  getPhaseTimerState,
+  isPlayerPhase,
+  updatePhaseTimer,
+} from "../foundry/combat/phase-timer.js";
 import {
   CURRENT_PHASE_FLAG,
   getActiveCamp,
-  type Phase,
   PRIORITY_CAMP_FLAG,
   RESOURCES_ACTION_FLAG,
   SCOPE_FLAG,
-} from "../utils/conflict.js";
-
-import { getConflictCamps } from "../utils/conflict-groups.js";
-
+} from "../rules/conflit/phases.js";
 import {
   createPhaseTimerState,
-  getPhaseTimerState,
   getRemainingTimeMs,
-  isPlayerPhase,
-  type PhaseTimerState,
-  updatePhaseTimer,
-} from "../utils/phase-timer.js";
+} from "../rules/conflit/timer.js";
+import type { Phase, PhaseTimerState } from "../rules/conflit/types.js";
 
 type TrackerActionResources = Pick<
   ReturnType<typeof getActionResources>,

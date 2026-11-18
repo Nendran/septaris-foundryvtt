@@ -1,36 +1,20 @@
 import {
   CURRENT_PHASE_FLAG,
   getActiveCamp,
-  type Phase,
   PRIORITY_CAMP_FLAG,
   SCOPE_FLAG,
-} from "./conflict.js";
-
+} from "../../rules/conflit/phases.js";
+import {
+  createPhaseTimerState,
+  getRemainingTimeMs,
+} from "../../rules/conflit/timer.js";
+import type {
+  Phase,
+  PhaseTimerAction,
+  PhaseTimerState,
+} from "../../rules/conflit/types.js";
 import { getConflictCamps, getPlayerCampId } from "./conflict-groups.js";
-
-export const PHASE_TIMER_FLAG = "phaseTimer";
-
-export type PhaseTimerState = {
-  cycle: number;
-  phase: Phase;
-  remainingMs: number;
-  startedAt: number | null;
-};
-
-export type PhaseTimerAction = "toggle" | "reset";
-
-export function createPhaseTimerState(
-  cycle: number,
-  phase: Phase,
-  conflit: SeptarisCombat,
-): PhaseTimerState {
-  return {
-    cycle,
-    phase,
-    remainingMs: conflit.combatants.size * 60 * 1000,
-    startedAt: null,
-  };
-}
+import { PHASE_TIMER_FLAG } from "./constants.js";
 
 export function getPhaseTimerState(
   combat: SeptarisCombat,
@@ -60,19 +44,6 @@ export function getPhaseTimerState(
   }
 
   return state as PhaseTimerState;
-}
-
-export function getRemainingTimeMs(
-  state: PhaseTimerState,
-  now: number = game.time.serverTime,
-): number {
-  if (state.startedAt === null) {
-    return state.remainingMs;
-  }
-
-  const elapsed = Math.max(0, now - state.startedAt);
-
-  return Math.max(0, state.remainingMs - elapsed);
 }
 
 export function isPlayerPhase(combat: SeptarisCombat): boolean {

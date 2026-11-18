@@ -1,5 +1,9 @@
-import { localizeLabel } from "./localisation.js";
-import { proficiencyName, skillName, skillProficiency } from "./skill.js";
+import { localizeLabel } from "../foundry/localisation.js";
+import {
+  proficiencyName,
+  skillName,
+  skillProficiency,
+} from "./skill-display.js";
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("septarisLocalize", (key, fallback) =>

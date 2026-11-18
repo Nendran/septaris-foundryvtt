@@ -1,15 +1,53 @@
-import type { CharacterData } from "../data/actor/character.js";
-import type { NPCData } from "../data/actor/npc.js";
+import type { CharacterData } from "../../data/actor/character.js";
+import type { NPCData } from "../../data/actor/npc.js";
+import { calculateCharacteristicSkillBonus } from "../../rules/resolution/modifiers.js";
+import { getResolutionDegree } from "../../rules/resolution/resolution.js";
+import type {
+  FeatEffect,
+  ResolutionResult,
+} from "../../rules/resolution/types.js";
 import {
   type RollDialogResult,
   SeptarisRollDialog,
-} from "../sheets/dialogs/roll-dialog.js";
+} from "../../sheets/dialogs/roll-dialog.js";
 import { getRollMessageModeLabel } from "./chat-message-modes.js";
-import { resolveAction } from "./resolution.js";
-import {
-  buildFormula,
-  calculateCharacteristicSkillBonus,
-} from "./roll-calculation.js";
+import { buildFormula } from "./roll-formula.js";
+
+export function resolveAction({
+  total,
+  target,
+  featSuccess,
+}: {
+  total: number;
+  target: number;
+  featSuccess: boolean;
+}): ResolutionResult {
+  const margin = total - target;
+
+  let finalMargin = margin;
+  let featEffect: FeatEffect = null;
+
+  if (featSuccess) {
+    if (margin < 0) {
+      finalMargin = 0;
+      featEffect = "rescue";
+    } else {
+      finalMargin = margin * 2;
+      featEffect = "double";
+    }
+  }
+
+  return {
+    total,
+    target,
+    margin,
+    finalMargin,
+    success: finalMargin >= 0,
+    featSuccess,
+    featEffect,
+    outcome: getResolutionDegree(finalMargin),
+  };
+}
 
 export const roll = async (
   character: CharacterData | NPCData,

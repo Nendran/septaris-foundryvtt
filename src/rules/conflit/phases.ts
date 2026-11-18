@@ -1,29 +1,15 @@
-export type Phase = 1 | 2 | 3 | 4;
+import type {
+  ConflictState,
+  NextPhaseResult,
+  Phase,
+  PrevPhaseResult,
+} from "./types";
 
 export const SCOPE_FLAG = "septaris";
 export const CURRENT_PHASE_FLAG = "currentPhase";
 export const PRIORITY_CAMP_FLAG = "priorityCamp";
 export const PLAYER_CAMP_ID_FLAG = "playerCampId";
 export const RESOURCES_ACTION_FLAG = "resources";
-
-export type ConflictState = {
-  currentPhase: Phase;
-  currentCycle: number;
-  priorityCamp: string;
-  otherCamp: string;
-};
-
-type NextPhaseResult = {
-  nextPhase: Phase;
-  nextCycle: number;
-  activeCamp: string;
-};
-
-type PrevPhaseResult = {
-  prevPhase: Phase;
-  prevCycle: number;
-  activeCamp: string;
-};
 
 export function validateConflictState(options: ConflictState): void {
   if (
