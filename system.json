@@ -33,7 +33,7 @@
       "path": "lang/fr.json"
     }
   ],
-  "initiative": "1d20 + @abilities.dex",
+  "initiative": "1d20 + @characteristics.dexterity",
   "grid": {
     "distance": 1,
     "units": "m",

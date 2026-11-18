@@ -394,7 +394,11 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
           savedState?.cycle === currentCombat.round &&
           savedState.phase === currentPhase
             ? savedState
-            : createPhaseTimerState(currentCombat.round, currentPhase as Phase);
+            : createPhaseTimerState(
+                currentCombat.round,
+                currentPhase as Phase,
+                combat,
+              );
 
         const remainingMs = getRemainingTimeMs(state);
 

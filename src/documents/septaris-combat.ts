@@ -44,7 +44,7 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
     await this.setFlag(
       SCOPE_FLAG,
       PHASE_TIMER_FLAG,
-      createPhaseTimerState(1, 1),
+      createPhaseTimerState(1, 1, this),
     );
 
     return startedCombat;
@@ -177,6 +177,7 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       [`flags.${SCOPE_FLAG}.${PHASE_TIMER_FLAG}`]: createPhaseTimerState(
         destinationCycle,
         destinationPhase,
+        this,
       ),
     });
   }

@@ -9,7 +9,6 @@ import {
 import { getConflictCamps, getPlayerCampId } from "./conflict-groups.js";
 
 export const PHASE_TIMER_FLAG = "phaseTimer";
-export const PHASE_TIMER_DURATION_MS = 6 * 60 * 1000;
 
 export type PhaseTimerState = {
   cycle: number;
@@ -23,11 +22,12 @@ export type PhaseTimerAction = "toggle" | "reset";
 export function createPhaseTimerState(
   cycle: number,
   phase: Phase,
+  conflit: SeptarisCombat,
 ): PhaseTimerState {
   return {
     cycle,
     phase,
-    remainingMs: PHASE_TIMER_DURATION_MS,
+    remainingMs: conflit.combatants.size * 60 * 1000,
     startedAt: null,
   };
 }
@@ -135,7 +135,7 @@ export async function updatePhaseTimer(
   const state =
     storedState?.cycle === cycle && storedState.phase === phase
       ? storedState
-      : createPhaseTimerState(cycle, phase);
+      : createPhaseTimerState(cycle, phase, combat);
 
   const now = game.time.serverTime;
 
@@ -144,7 +144,7 @@ export async function updatePhaseTimer(
   let nextState: PhaseTimerState;
 
   if (action === "reset") {
-    nextState = createPhaseTimerState(cycle, phase);
+    nextState = createPhaseTimerState(cycle, phase, combat);
   } else if (state.startedAt !== null) {
     // Pause : on conserve le temps réellement restant.
     nextState = {

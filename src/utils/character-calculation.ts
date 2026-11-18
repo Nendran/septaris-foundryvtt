@@ -30,7 +30,11 @@ export function getMaxHealthFromActor(actor: SharedProps): number {
 }
 
 export function getDefenseFromActor(actor: SharedProps): number {
-  return 12 + getCharacteristicModifier(actor.characteristics.dexterity);
+  return (
+    8 +
+    getCharacteristicModifier(actor.characteristics.dexterity) +
+    getCharacteristicModifier(actor.characteristics.constitution)
+  );
 }
 
 export function getSpeedFromActor(_actor: SharedProps): number {
