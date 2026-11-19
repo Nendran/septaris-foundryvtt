@@ -1,4 +1,4 @@
-import type { ConflictCamp } from "../../foundry/combat/conflict-groups.js";
+import type { ConflictCamp } from "./types.js";
 
 export function determinePriorityCamp(
   camps: ConflictCamp[],

@@ -8,7 +8,11 @@ import type {
   PhaseTimerAction,
   PhaseTimerState,
 } from "../../rules/conflit/types.js";
-import { getConflictCamps, getPlayerCampId } from "./conflict-groups.js";
+import {
+  getConflictCamps,
+  getPlayerCampId,
+  getPlayerCampSize,
+} from "./conflict-groups.js";
 import {
   CURRENT_PHASE_FLAG,
   PHASE_TIMER_FLAG,
@@ -106,7 +110,7 @@ export async function updatePhaseTimer(
   const state =
     storedState?.cycle === cycle && storedState.phase === phase
       ? storedState
-      : createPhaseTimerState(cycle, phase, combat.combatants.size);
+      : createPhaseTimerState(cycle, phase, getPlayerCampSize(combat));
 
   const now = game.time.serverTime;
 

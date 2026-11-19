@@ -5,6 +5,7 @@ import {
 } from "../foundry/combat/action-resources.js";
 import {
   getConflictCamps,
+  getPlayerCampSize,
   validateConflictGroups,
 } from "../foundry/combat/conflict-groups.js";
 import { rollConflictInitiative } from "../foundry/combat/conflict-initiative.js";
@@ -43,7 +44,7 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
     await this.setFlag(
       SCOPE_FLAG,
       PHASE_TIMER_FLAG,
-      createPhaseTimerState(1, 1, this.combatants.size),
+      createPhaseTimerState(1, 1, getPlayerCampSize(this)),
     );
 
     return startedCombat;
@@ -176,7 +177,7 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       [`flags.${SCOPE_FLAG}.${PHASE_TIMER_FLAG}`]: createPhaseTimerState(
         destinationCycle,
         destinationPhase,
-        this.combatants.size,
+        getPlayerCampSize(this),
       ),
     });
   }

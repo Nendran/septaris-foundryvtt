@@ -11,7 +11,10 @@ import {
   getActionResources,
   restoreActionResource,
 } from "../foundry/combat/action-resources.js";
-import { getConflictCamps } from "../foundry/combat/conflict-groups.js";
+import {
+  getConflictCamps,
+  getPlayerCampSize,
+} from "../foundry/combat/conflict-groups.js";
 import {
   CURRENT_PHASE_FLAG,
   PRIORITY_CAMP_FLAG,
@@ -395,7 +398,7 @@ export class SeptarisCombatTracker extends foundry.applications.sidebar.tabs
             : createPhaseTimerState(
                 currentCombat.round,
                 currentPhase as Phase,
-                combat.combatants.size,
+                getPlayerCampSize(combat),
               );
 
         const remainingMs = getRemainingTimeMs(state, game.time.serverTime);

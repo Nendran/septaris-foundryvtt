@@ -1,40 +1,37 @@
-import { localizeLabel } from "../localisation";
-import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "./constants";
-
-export type ConflictCamp = {
-  id: string;
-  name: string;
-  members: {
-    id: string;
-    name: string;
-  }[];
-  initiative: number;
-};
+import type { ConflictCamp } from "../../rules/conflit/types.js";
+import { localizeLabel } from "../localisation.js";
+import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "./constants.js";
 
 export function getConflictCamps(combat: SeptarisCombat): ConflictCamp[] {
-  return combat.groups.contents.flatMap((group: ConflictCamp) => {
-    if (!group.id) return [];
+  const camps: ConflictCamp[] = combat.groups.contents.flatMap(
+    (group: ConflictCamp) => {
+      if (!group.id) return [];
 
-    const members = [...group.members].flatMap((member) => {
-      if (!member.id) return [];
+      const members = [...group.members].flatMap((member) => {
+        if (!member.id) return [];
+
+        return [
+          {
+            id: member.id,
+            name: member.name,
+          },
+        ];
+      });
 
       return [
         {
-          id: member.id,
-          name: member.name,
+          id: group.id,
+          name: group.name ?? group.id,
+          members,
         },
       ];
-    });
+    },
+  );
 
-    return [
-      {
-        id: group.id,
-        name: group.name ?? group.id,
-        members,
-        initiative: getCampInitiative(combat, group),
-      },
-    ];
-  });
+  return camps.map((camp) => ({
+    ...camp,
+    initiative: getCampInitiative(combat, camp),
+  }));
 }
 
 export function getUnassignedCombatants(
@@ -177,4 +174,15 @@ function getCampInitiative(combat: SeptarisCombat, camp: ConflictCamp): number {
     }
   }
   return initiativeCamp;
+}
+
+export function getPlayerCampSize(combat: SeptarisCombat): number {
+  const camps = getConflictCamps(combat);
+  const playerCampId = getPlayerCampId(combat);
+  const playerCamp = camps.find((camp) => camp.id === playerCampId);
+  if (!playerCamp) {
+    throw new Error("SEPTARIS | No player camp defined");
+  }
+
+  return playerCamp.members.length;
 }

@@ -37,3 +37,13 @@ export type PhaseTimerState = {
 };
 
 export type PhaseTimerAction = "toggle" | "reset";
+
+export type ConflictCamp = {
+  id: string;
+  name: string;
+  members: {
+    id: string;
+    name: string;
+  }[];
+  initiative: number;
+};

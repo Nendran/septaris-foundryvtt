@@ -6,7 +6,6 @@ import type { HandlebarsRenderOptions } from "@client/applications/api/_module.m
 import type { FormDataExtended } from "@client/applications/ux/_module.mjs";
 import {
   assignCombatantToCamp,
-  type ConflictCamp,
   getConflictCamps,
   getPlayerCampId,
   initializeConflictGroups,
@@ -14,6 +13,7 @@ import {
 } from "../../foundry/combat/conflict-groups.js";
 import { SYSTEM_PATH } from "../../foundry/constants.js";
 import { localizeLabel } from "../../foundry/localisation.js";
+import type { ConflictCamp } from "../../rules/conflit/types.js";
 
 interface ConflitSetupConfig {
   title: string;
