@@ -140,38 +140,6 @@ export async function setPlayerCampId(
   await combat.setFlag(SCOPE_FLAG, PLAYER_CAMP_ID_FLAG, campId);
 }
 
-export function getCampInitiative(
-  combat: SeptarisCombat,
-  camp: ConflictCamp,
-): number {
-  if (camp.members.length === 0) {
-    throw new Error(`SEPTARIS | Conflict camp ${camp.name} has no members.`);
-  }
-  let initiativeCamp = -Infinity;
-  for (const member of camp.members) {
-    const combatant = combat.combatants.get(member.id);
-    if (!combatant) {
-      throw new Error(
-        `SEPTARIS | Combatant with ID ${member.id} not found in combat.`,
-      );
-    }
-    if (
-      combatant.initiative === null ||
-      combatant.initiative === undefined ||
-      !Number.isFinite(combatant.initiative)
-    ) {
-      throw new Error(
-        `SEPTARIS | Combatant ${combatant.name} in camp ${camp.name} has no initiative value or an invalid value.`,
-      );
-    }
-    const initiative = combatant.initiative;
-    if (initiative > initiativeCamp) {
-      initiativeCamp = initiative;
-    }
-  }
-  return initiativeCamp;
-}
-
 export function getPlayerCampSize(combat: SeptarisCombat): number {
   const camps = getConflictCamps(combat);
   const playerCampId = getPlayerCampId(combat);
