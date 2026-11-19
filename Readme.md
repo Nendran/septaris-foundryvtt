@@ -5,6 +5,7 @@
 ![Foundry VTT](https://img.shields.io/badge/Foundry%20VTT-v14-informational)
 ![GitHub Release](https://img.shields.io/github/v/release/Nendran/septaris-foundryvtt?display_name=tag)
 ![CI](https://github.com/Nendran/septaris-foundryvtt/actions/workflows/ci.yml/badge.svg)
+[![Couverture](https://codecov.io/gh/Nendran/septaris-foundryvtt/branch/main/graph/badge.svg)](https://codecov.io/gh/Nendran/septaris-foundryvtt)
 ![License](https://img.shields.io/github/license/Nendran/septaris-foundryvtt)
 
 ---
@@ -143,6 +144,24 @@ npm run ci
 ```
 
 Les mêmes vérifications sont exécutées automatiquement par GitHub Actions sur les changements du dépôt.
+
+### Tests et couverture
+
+Lancer les tests unitaires :
+
+```bash
+npm test
+```
+
+Exécuter les tests avec mesure de la couverture de code :
+
+```bash
+npm run test:coverage
+```
+
+La couverture est calculée sur **l'ensemble du code JavaScript compilé dans `scripts/`**, y compris les composants Foundry non exercés par les tests Node.js. Les fichiers non testés comptent donc comme non couverts.
+
+Le rapport LCOV est généré dans `coverage/lcov.info` et publié sur [Codecov](https://codecov.io/gh/Nendran/septaris-foundryvtt) par la CI. Le badge en tête de cette page affiche la couverture de la branche `main` après la configuration de Codecov et le premier envoi réussi. Ce pourcentage mesure le code exécuté par les tests, et non leur taux de réussite.
 
 ---
 
