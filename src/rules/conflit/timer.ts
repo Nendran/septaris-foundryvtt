@@ -1,27 +1,25 @@
-import type { Phase, PhaseTimerState } from "./types.js";
+import type { Phase, PhaseTimerState } from "./types";
 
 export function createPhaseTimerState(
   cycle: number,
   phase: Phase,
-  conflit: SeptarisCombat,
+  playerCount: number,
 ): PhaseTimerState {
   return {
     cycle,
     phase,
-    remainingMs: conflit.combatants.size * 60 * 1000,
+    remainingMs: (playerCount + 1) * 60_000,
     startedAt: null,
   };
 }
 
 export function getRemainingTimeMs(
   state: PhaseTimerState,
-  now: number = game.time.serverTime,
+  now: number,
 ): number {
   if (state.startedAt === null) {
     return state.remainingMs;
   }
 
-  const elapsed = Math.max(0, now - state.startedAt);
-
-  return Math.max(0, state.remainingMs - elapsed);
+  return Math.max(0, state.remainingMs - Math.max(0, now - state.startedAt));
 }

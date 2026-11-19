@@ -1,4 +1,4 @@
-import type { ResolutionDegree } from "./types";
+import type { FeatEffect, ResolutionDegree, ResolutionResult } from "./types";
 
 export function getResolutionDegree(margin: number): ResolutionDegree {
   if (margin <= -16) {
@@ -34,4 +34,40 @@ export function getResolutionDegree(margin: number): ResolutionDegree {
   }
 
   return "ExceptionalSuccess";
+}
+
+export function resolveAction({
+  total,
+  target,
+  featSuccess,
+}: {
+  total: number;
+  target: number;
+  featSuccess: boolean;
+}): ResolutionResult {
+  const margin = total - target;
+
+  let finalMargin = margin;
+  let featEffect: FeatEffect = null;
+
+  if (featSuccess) {
+    if (margin < 0) {
+      finalMargin = 0;
+      featEffect = "rescue";
+    } else {
+      finalMargin = margin * 2;
+      featEffect = "double";
+    }
+  }
+
+  return {
+    total,
+    target,
+    margin,
+    finalMargin,
+    success: finalMargin >= 0,
+    featSuccess,
+    featEffect,
+    outcome: getResolutionDegree(finalMargin),
+  };
 }

@@ -1,5 +1,5 @@
-import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "../../rules/conflit/phases";
 import { localizeLabel } from "../localisation";
+import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "./constants";
 
 export type ConflictCamp = {
   id: string;
@@ -8,6 +8,7 @@ export type ConflictCamp = {
     id: string;
     name: string;
   }[];
+  initiative: number;
 };
 
 export function getConflictCamps(combat: SeptarisCombat): ConflictCamp[] {
@@ -30,6 +31,7 @@ export function getConflictCamps(combat: SeptarisCombat): ConflictCamp[] {
         id: group.id,
         name: group.name ?? group.id,
         members,
+        initiative: getCampInitiative(combat, group),
       },
     ];
   });
@@ -146,4 +148,33 @@ export async function setPlayerCampId(
   }
 
   await combat.setFlag(SCOPE_FLAG, PLAYER_CAMP_ID_FLAG, campId);
+}
+
+function getCampInitiative(combat: SeptarisCombat, camp: ConflictCamp): number {
+  if (camp.members.length === 0) {
+    throw new Error(`SEPTARIS | Conflict camp ${camp.name} has no members.`);
+  }
+  let initiativeCamp = -Infinity;
+  for (const member of camp.members) {
+    const combatant = combat.combatants.get(member.id);
+    if (!combatant) {
+      throw new Error(
+        `SEPTARIS | Combatant with ID ${member.id} not found in combat.`,
+      );
+    }
+    if (
+      combatant.initiative === null ||
+      combatant.initiative === undefined ||
+      !Number.isFinite(combatant.initiative)
+    ) {
+      throw new Error(
+        `SEPTARIS | Combatant ${combatant.name} in camp ${camp.name} has no initiative value or an invalid value.`,
+      );
+    }
+    const initiative = combatant.initiative;
+    if (initiative > initiativeCamp) {
+      initiativeCamp = initiative;
+    }
+  }
+  return initiativeCamp;
 }

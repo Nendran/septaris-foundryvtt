@@ -2,12 +2,12 @@ import type { RollOptions } from "@client/dice/_types.mjs";
 import { CharacterData } from "../../data/actor/character.js";
 import { NPCData } from "../../data/actor/npc.js";
 import { determinePriorityCamp } from "../../rules/conflit/initiative.js";
-import { PRIORITY_CAMP_FLAG, SCOPE_FLAG } from "../../rules/conflit/phases.js";
 import {
   getConflictCamps,
   getPlayerCampId,
   validateConflictGroups,
 } from "./conflict-groups.js";
+import { PRIORITY_CAMP_FLAG, SCOPE_FLAG } from "./constants.js";
 
 export async function rollCombatantInitiative(
   combatant: foundry.documents.Combatant<Combat>,
@@ -46,10 +46,8 @@ export async function rollConflictInitiative(
 ): Promise<void> {
   validateConflictGroups(combat);
   const playerCampId = getPlayerCampId(combat);
-  if (
-    !playerCampId ||
-    !getConflictCamps(combat).some((camp) => camp.id === playerCampId)
-  ) {
+  const camps = getConflictCamps(combat);
+  if (!playerCampId || !camps.some((camp) => camp.id === playerCampId)) {
     throw new Error(`SEPTARIS | PlayerCampId is not in conflit's camps`);
   }
   const promiseArray: Promise<number>[] = [];
@@ -60,9 +58,10 @@ export async function rollConflictInitiative(
     console.error("SEPTARIS | Error rolling initiative for combatants:", error);
     throw error;
   });
+
   await combat.setFlag(
     SCOPE_FLAG,
     PRIORITY_CAMP_FLAG,
-    determinePriorityCamp(combat),
+    determinePriorityCamp(camps, playerCampId),
   );
 }

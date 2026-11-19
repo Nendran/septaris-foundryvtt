@@ -6,7 +6,7 @@ export function calculateCharacteristicModifier(
   return Math.floor((characteristicValue - 10) / 2);
 }
 
-export function calculateCharacteristicModifierFromActor(
+export function calculateCharacteristicModifiers(
   strength: number,
   dexterity: number,
   constitution: number,

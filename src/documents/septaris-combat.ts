@@ -8,15 +8,17 @@ import {
   validateConflictGroups,
 } from "../foundry/combat/conflict-groups.js";
 import { rollConflictInitiative } from "../foundry/combat/conflict-initiative.js";
-import { PHASE_TIMER_FLAG } from "../foundry/combat/constants.js";
 import {
   CURRENT_PHASE_FLAG,
+  PHASE_TIMER_FLAG,
+  PRIORITY_CAMP_FLAG,
+  SCOPE_FLAG,
+} from "../foundry/combat/constants.js";
+import {
   getNextCycle,
   getNextPhase,
   getPreviousCycle,
   getPreviousPhase,
-  PRIORITY_CAMP_FLAG,
-  SCOPE_FLAG,
 } from "../rules/conflit/phases.js";
 import { createPhaseTimerState } from "../rules/conflit/timer.js";
 import type { ConflictState, Phase } from "../rules/conflit/types.js";
@@ -41,7 +43,7 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
     await this.setFlag(
       SCOPE_FLAG,
       PHASE_TIMER_FLAG,
-      createPhaseTimerState(1, 1, this),
+      createPhaseTimerState(1, 1, this.combatants.size),
     );
 
     return startedCombat;
@@ -174,7 +176,7 @@ export class SeptarisCombatDocument extends foundry.documents.Combat {
       [`flags.${SCOPE_FLAG}.${PHASE_TIMER_FLAG}`]: createPhaseTimerState(
         destinationCycle,
         destinationPhase,
-        this,
+        this.combatants.size,
       ),
     });
   }

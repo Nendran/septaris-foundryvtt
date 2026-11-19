@@ -1,5 +1,5 @@
-import { formatModifier } from "../../rules/resolution/modifiers";
-import { ROLL_MODES, type RollMode } from "../../rules/resolution/types";
+import { formatModifier } from "../../rules/resolution/modifiers.js";
+import { ROLL_MODES, type RollMode } from "../../rules/resolution/types.js";
 
 export const buildFormula = (
   mode: RollMode,

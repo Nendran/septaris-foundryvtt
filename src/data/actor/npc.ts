@@ -1,5 +1,5 @@
 import type { ModelPropsFromSchema } from "@common/data/fields.mjs";
-import { calculateCharacteristicModifierFromActor } from "../../rules/character/characteristics.js";
+import { calculateCharacteristicModifiers } from "../../rules/character/characteristics.js";
 import { calculateNextSkillProficiency } from "../../rules/character/skill.js";
 import { calculateSpeed } from "../../rules/character/speed.js";
 import type {
@@ -57,7 +57,7 @@ export class NPCData extends foundry.abstract.TypeDataModel<
   override prepareDerivedData(): void {
     super.prepareDerivedData();
 
-    this.characteristicsModifiers = calculateCharacteristicModifierFromActor(
+    this.characteristicsModifiers = calculateCharacteristicModifiers(
       this.characteristics.strength,
       this.characteristics.dexterity,
       this.characteristics.constitution,

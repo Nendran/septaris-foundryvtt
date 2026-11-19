@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 import {
   getResolutionDegree,
   resolveAction,
-} from "../scripts/utils/resolution.js";
+} from "../scripts/rules/resolution/resolution.js";
 
 describe("resolution degree boundaries", () => {
   const cases = [

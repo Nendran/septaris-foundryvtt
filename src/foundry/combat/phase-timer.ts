@@ -1,9 +1,4 @@
-import {
-  CURRENT_PHASE_FLAG,
-  getActiveCamp,
-  PRIORITY_CAMP_FLAG,
-  SCOPE_FLAG,
-} from "../../rules/conflit/phases.js";
+import { getActiveCamp } from "../../rules/conflit/phases.js";
 import {
   createPhaseTimerState,
   getRemainingTimeMs,
@@ -14,7 +9,12 @@ import type {
   PhaseTimerState,
 } from "../../rules/conflit/types.js";
 import { getConflictCamps, getPlayerCampId } from "./conflict-groups.js";
-import { PHASE_TIMER_FLAG } from "./constants.js";
+import {
+  CURRENT_PHASE_FLAG,
+  PHASE_TIMER_FLAG,
+  PRIORITY_CAMP_FLAG,
+  SCOPE_FLAG,
+} from "./constants.js";
 
 export function getPhaseTimerState(
   combat: SeptarisCombat,
@@ -106,7 +106,7 @@ export async function updatePhaseTimer(
   const state =
     storedState?.cycle === cycle && storedState.phase === phase
       ? storedState
-      : createPhaseTimerState(cycle, phase, combat);
+      : createPhaseTimerState(cycle, phase, combat.combatants.size);
 
   const now = game.time.serverTime;
 
@@ -115,7 +115,7 @@ export async function updatePhaseTimer(
   let nextState: PhaseTimerState;
 
   if (action === "reset") {
-    nextState = createPhaseTimerState(cycle, phase, combat);
+    nextState = createPhaseTimerState(cycle, phase, combat.combatants.size);
   } else if (state.startedAt !== null) {
     // Pause : on conserve le temps réellement restant.
     nextState = {
