@@ -94,6 +94,7 @@ npm ci
 ```
 
 Effectuez la compilation :
+
 ```bash
 npm run build
 ```
