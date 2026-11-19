@@ -119,7 +119,7 @@ export async function updatePhaseTimer(
   let nextState: PhaseTimerState;
 
   if (action === "reset") {
-    nextState = createPhaseTimerState(cycle, phase, combat.combatants.size);
+    nextState = createPhaseTimerState(cycle, phase, getPlayerCampSize(combat));
   } else if (state.startedAt !== null) {
     // Pause : on conserve le temps réellement restant.
     nextState = {

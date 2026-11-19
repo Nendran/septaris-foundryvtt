@@ -45,5 +45,9 @@ export type ConflictCamp = {
     id: string;
     name: string;
   }[];
+};
+
+export type CampInitiative = {
+  id: string;
   initiative: number;
 };

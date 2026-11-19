@@ -3,35 +3,28 @@ import { localizeLabel } from "../localisation.js";
 import { PLAYER_CAMP_ID_FLAG, SCOPE_FLAG } from "./constants.js";
 
 export function getConflictCamps(combat: SeptarisCombat): ConflictCamp[] {
-  const camps: ConflictCamp[] = combat.groups.contents.flatMap(
-    (group: ConflictCamp) => {
-      if (!group.id) return [];
+  return combat.groups.contents.flatMap((group: ConflictCamp) => {
+    if (!group.id) return [];
 
-      const members = [...group.members].flatMap((member) => {
-        if (!member.id) return [];
-
-        return [
-          {
-            id: member.id,
-            name: member.name,
-          },
-        ];
-      });
+    const members = [...group.members].flatMap((member) => {
+      if (!member.id) return [];
 
       return [
         {
-          id: group.id,
-          name: group.name ?? group.id,
-          members,
+          id: member.id,
+          name: member.name,
         },
       ];
-    },
-  );
+    });
 
-  return camps.map((camp) => ({
-    ...camp,
-    initiative: getCampInitiative(combat, camp),
-  }));
+    return [
+      {
+        id: group.id,
+        name: group.name ?? group.id,
+        members,
+      },
+    ];
+  });
 }
 
 export function getUnassignedCombatants(
@@ -147,7 +140,10 @@ export async function setPlayerCampId(
   await combat.setFlag(SCOPE_FLAG, PLAYER_CAMP_ID_FLAG, campId);
 }
 
-function getCampInitiative(combat: SeptarisCombat, camp: ConflictCamp): number {
+export function getCampInitiative(
+  combat: SeptarisCombat,
+  camp: ConflictCamp,
+): number {
   if (camp.members.length === 0) {
     throw new Error(`SEPTARIS | Conflict camp ${camp.name} has no members.`);
   }

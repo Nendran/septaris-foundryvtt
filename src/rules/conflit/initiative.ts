@@ -1,10 +1,11 @@
-import type { ConflictCamp } from "./types.js";
+import type { CampInitiative, ConflictCamp } from "./types.js";
 
 export function determinePriorityCamp(
   camps: ConflictCamp[],
   playerCampId: string,
+  campsInitiative: CampInitiative[],
 ): string {
-  if (camps[0].initiative === camps[1].initiative) {
+  if (campsInitiative[0].initiative === campsInitiative[1].initiative) {
     if (!camps.some((c) => c.id === playerCampId)) {
       throw new Error(
         "SEPTARIS | Player camp is not part of the conflict camps.",
@@ -13,9 +14,11 @@ export function determinePriorityCamp(
     return playerCampId;
   }
 
-  const maxInitiative = Math.max(...camps.map((c) => c.initiative));
+  const maxInitiative = Math.max(...campsInitiative.map((c) => c.initiative));
 
-  const priorityCamp = camps.find((c) => c.initiative === maxInitiative)?.id;
+  const priorityCamp = campsInitiative.find(
+    (c) => c.initiative === maxInitiative,
+  )?.id;
 
   if (!priorityCamp) {
     throw new Error("SEPTARIS | Could not determine priority camp.");

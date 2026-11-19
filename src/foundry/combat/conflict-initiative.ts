@@ -2,7 +2,9 @@ import type { RollOptions } from "@client/dice/_types.mjs";
 import { CharacterData } from "../../data/actor/character.js";
 import { NPCData } from "../../data/actor/npc.js";
 import { determinePriorityCamp } from "../../rules/conflit/initiative.js";
+import type { CampInitiative } from "../../rules/conflit/types.js";
 import {
+  getCampInitiative,
   getConflictCamps,
   getPlayerCampId,
   validateConflictGroups,
@@ -59,9 +61,14 @@ export async function rollConflictInitiative(
     throw error;
   });
 
+  const campInitiative: CampInitiative[] = camps.map((camp) => ({
+    id: camp.id,
+    initiative: getCampInitiative(combat, camp),
+  }));
+
   await combat.setFlag(
     SCOPE_FLAG,
     PRIORITY_CAMP_FLAG,
-    determinePriorityCamp(camps, playerCampId),
+    determinePriorityCamp(camps, playerCampId, campInitiative),
   );
 }
