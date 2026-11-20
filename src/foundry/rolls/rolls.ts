@@ -26,7 +26,7 @@ export const roll = async (
 
   const targets: Token[] = Array.from(game.user.targets);
   if (type === "attack") {
-    if (targets.length === 0 || targets === null) {
+    if (targets.length === 0) {
       ui.notifications.error("SEPTARIS.Roll.NoTarget", { localize: true });
       return;
     }
@@ -35,6 +35,16 @@ export const roll = async (
         localize: true,
       });
       return;
+    }
+    
+    for (const target of targets) {
+      if (!(target.actor?.system instanceof CharacterData) &&
+      !(target.actor?.system instanceof NPCData)) {
+        ui.notifications.error("SEPTARIS.Roll.InvalidTargets", {
+          localize: true,
+        });
+        return
+      }
     }
   }
 
@@ -131,6 +141,8 @@ export const roll = async (
       result.success ? "success" : "failure"
     }`,
     formula: roll.formula,
+    rollType: type,
+    defender: type === 'attack' ? targets[0].actor : ''
   };
 
   const content = await foundry.applications.handlebars.renderTemplate(

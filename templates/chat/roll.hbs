@@ -128,6 +128,12 @@
         <span>Marge</span>
         <strong>{{marginLabel}}</strong>
       </div>
+      {{#if (eq rollType 'attack')}}
+        <div class="roll-card__resolution-row">
+          <span>Ciblé</span>
+          <strong>{{defender.name}}</strong>
+        </div>
+      {{/if}}
 
       {{#if featSuccess}}
         <div class="roll-card__resolution-row">

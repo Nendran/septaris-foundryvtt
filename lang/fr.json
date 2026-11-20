@@ -68,6 +68,7 @@
   "SEPTARIS.Roll.NoFeatDie": "Pas de dé de prouesse",
   "SEPTARIS.Roll.NoTarget": "Pas de cible",
   "SEPTARIS.Roll.TooManyTargets": "Plus d'une cible sélectionnées",
+  "SEPTARIS.Roll.InvalidTargets": "Les cibles sélectionnées sont invalides",
   "TYPES.Actor.character": "Personnage",
   "TYPES.Actor.npc": "PNJ",
   "COMBAT.RollInitiative": "Initiative"
