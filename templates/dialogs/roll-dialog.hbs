@@ -119,6 +119,7 @@
     </div>
   </fieldset>
 
+  {{#if (eq ../rollConfig.type 'default')}}
   <fieldset class="form-group radio-group">
     <legend>{{localize "SEPTARIS.Interface.Difficulty"}}</legend>
 
@@ -130,6 +131,7 @@
       >
     </div>
   </fieldset>
+  {{/if}}
 
   <footer class="actions row">
     <button type="submit">{{localize "SEPTARIS.Interface.Roll.Launch"}}</button>

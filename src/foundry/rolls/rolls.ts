@@ -1,5 +1,6 @@
-import type { CharacterData } from "../../data/actor/character.js";
-import type { NPCData } from "../../data/actor/npc.js";
+import type { Token } from "@client/canvas/placeables/_module.mjs";
+import { CharacterData } from "../../data/actor/character.js";
+import { NPCData } from "../../data/actor/npc.js";
 import { calculateCharacteristicSkillBonus } from "../../rules/resolution/modifiers.js";
 import { resolveAction } from "../../rules/resolution/resolution.js";
 import {
@@ -9,20 +10,48 @@ import {
 import { getRollMessageModeLabel } from "./chat-message-modes.js";
 import { buildFormula } from "./roll-formula.js";
 
+export type RollType = "default" | "attack";
+
 export const roll = async (
   character: CharacterData | NPCData,
   withFeatDie: boolean = true,
+  type: RollType = "default",
 ) => {
   const dialog = new SeptarisRollDialog({
     characteristics: character.characteristicsModifiers,
     skills: character.skills,
     withFeatDie,
+    type,
   });
+
+  const targets: Token[] = Array.from(game.user.targets);
+  if (type === "attack") {
+    if (targets.length === 0 || targets === null) {
+      ui.notifications.error("SEPTARIS.Roll.NoTarget", { localize: true });
+      return;
+    }
+    if (targets.length > 1) {
+      ui.notifications.error("SEPTARIS.Roll.TooManyTargets", {
+        localize: true,
+      });
+      return;
+    }
+  }
 
   const rollOptions = await dialog.waitForResult();
 
   if (!rollOptions) {
     return;
+  }
+
+  let difficulty = rollOptions.difficulty;
+
+  if (
+    type === "attack" &&
+    (targets[0].actor?.system instanceof CharacterData ||
+      targets[0].actor?.system instanceof NPCData)
+  ) {
+    difficulty = targets[0].actor?.system.defense;
   }
 
   const messageMode = rollOptions.messageMode;
@@ -71,7 +100,7 @@ export const roll = async (
 
   const result = resolveAction({
     total: roll.total,
-    target: rollOptions.difficulty,
+    target: difficulty,
     featSuccess: featSuccess ?? false,
   });
 

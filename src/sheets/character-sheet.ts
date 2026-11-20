@@ -104,6 +104,14 @@ export class SeptarisCharacterSheet extends SeptarisActorSheetBase {
       });
 
     htmlElement
+      .querySelector<HTMLElement>("#attack")
+      ?.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        await roll(this.document.system, true, "attack");
+      });
+
+    htmlElement
       .querySelectorAll<HTMLButtonElement>("[data-health-delta]")
       .forEach((button) => {
         button.addEventListener("click", async (event) => {

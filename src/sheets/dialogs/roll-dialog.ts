@@ -12,6 +12,7 @@ import {
   getRollMessageModeChoices,
   normalizeRollMessageMode,
 } from "../../foundry/rolls/chat-message-modes.js";
+import type { RollType } from "../../foundry/rolls/rolls.js";
 import { ROLL_MODES, type RollMode } from "../../rules/resolution/types.js";
 
 interface RollDialogConfig {
@@ -19,6 +20,7 @@ interface RollDialogConfig {
   skills: Record<string, number>;
   characteristics: Record<string, number>;
   withFeatDie: boolean;
+  type: RollType;
 }
 
 export interface RollDialogResult {
@@ -107,6 +109,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       characteristics = {},
       skills = {},
       withFeatDie = true,
+      type = "default",
     }: Partial<RollDialogConfig> = {},
     options = {},
   ) {
@@ -117,6 +120,7 @@ export class SeptarisRollDialog extends HandlebarsApplicationMixin(
       skills,
       characteristics,
       withFeatDie,
+      type,
     };
   }
 
