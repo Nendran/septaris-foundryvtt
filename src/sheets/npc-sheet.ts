@@ -95,7 +95,7 @@ export class SeptarisNPCSheet extends SeptarisActorSheetBase {
       ?.addEventListener("click", async (event) => {
         event.preventDefault();
 
-        await roll(this.document.system, true, "attack");
+        await roll(this.document.system, false, "attack");
       });
 
     htmlElement

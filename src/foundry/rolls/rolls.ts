@@ -36,14 +36,16 @@ export const roll = async (
       });
       return;
     }
-    
+
     for (const target of targets) {
-      if (!(target.actor?.system instanceof CharacterData) &&
-      !(target.actor?.system instanceof NPCData)) {
+      if (
+        !(target.actor?.system instanceof CharacterData) &&
+        !(target.actor?.system instanceof NPCData)
+      ) {
         ui.notifications.error("SEPTARIS.Roll.InvalidTargets", {
           localize: true,
         });
-        return
+        return;
       }
     }
   }
@@ -142,7 +144,7 @@ export const roll = async (
     }`,
     formula: roll.formula,
     rollType: type,
-    defender: type === 'attack' ? targets[0].actor : ''
+    defender: type === "attack" ? targets[0].actor : "",
   };
 
   const content = await foundry.applications.handlebars.renderTemplate(

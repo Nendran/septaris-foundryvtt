@@ -120,7 +120,7 @@
     <section class="roll-card__resolution">
 
       <div class="roll-card__resolution-row">
-        <span>DD</span>
+        <span>{{#if (eq rollType 'attack')}}Défense{{else}}DD{{/if}}</span>
         <strong>{{difficulty}}</strong>
       </div>
 
