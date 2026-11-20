@@ -120,7 +120,7 @@ export const roll = async (
     featDie: "featDice" in character ? character.featDice : undefined,
     featSuccess,
     hasDifficulty: true,
-    difficulty: rollOptions.difficulty,
+    difficulty: difficulty,
     marginLabel: result.margin,
     finalMarginLabel: result.finalMargin,
     outcomeLabel: game.i18n.localize(`SEPTARIS.Resolution.${result.outcome}`),
