@@ -7,6 +7,7 @@ import {
   type RollDialogResult,
   SeptarisRollDialog,
 } from "../../sheets/dialogs/roll-dialog.js";
+import { calculateDamage } from "../combat/damage.js";
 import { getRollMessageModeLabel } from "./chat-message-modes.js";
 import { buildFormula } from "./roll-formula.js";
 
@@ -23,7 +24,6 @@ export const roll = async (
     withFeatDie,
     type,
   });
-
   const targets: Token[] = Array.from(game.user.targets);
   if (type === "attack") {
     if (targets.length === 0) {
@@ -116,6 +116,13 @@ export const roll = async (
     featSuccess: featSuccess ?? false,
   });
 
+  let damage: number = 0;
+
+  if (type === "attack" && result.margin >= 0) {
+    damage = calculateDamage(result.margin, character.weaponDamage);
+    console.log(`SEPTARIS | damage : ${damage}`);
+  }
+
   const templateData = {
     actorName: character.parent.name,
     actorImg: character.parent.img,
@@ -145,6 +152,7 @@ export const roll = async (
     formula: roll.formula,
     rollType: type,
     defender: type === "attack" ? targets[0].actor : "",
+    damage,
   };
 
   const content = await foundry.applications.handlebars.renderTemplate(

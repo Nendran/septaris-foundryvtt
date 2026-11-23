@@ -53,6 +53,10 @@ export class NPCData extends foundry.abstract.TypeDataModel<
     return calculateSpeed();
   }
 
+  get weaponDamage(): number {
+    return 0;
+  }
+
   /** @inheritDoc */
   override prepareDerivedData(): void {
     super.prepareDerivedData();

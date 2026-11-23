@@ -80,6 +80,10 @@ export class CharacterData extends foundry.abstract.TypeDataModel<
     );
   }
 
+  get weaponDamage(): number {
+    return 0;
+  }
+
   get speed(): number {
     return calculateSpeed();
   }
