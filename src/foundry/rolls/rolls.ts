@@ -120,7 +120,6 @@ export const roll = async (
 
   if (type === "attack" && result.finalMargin >= 0) {
     damage = calculateDamage(result.finalMargin, character.weaponDamage);
-    console.log(`SEPTARIS | damage : ${damage}`);
   }
 
   const templateData = {
