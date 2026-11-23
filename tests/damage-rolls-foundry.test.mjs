@@ -8,12 +8,41 @@ const messages = [];
 const rendered = [];
 const dice = [];
 const evaluated = [];
+const remoteRequests = [];
+const directUpdates = [];
 let dialogResult;
 
 globalThis.game = {
   user: { id: "damage-tester", targets: new Set() },
   i18n: { localize: (key) => key },
   settings: { get: () => "public" },
+  users: {
+    activeGM: {
+      id: "gm-test",
+      active: true,
+      async query(queryName, request, options) {
+        remoteRequests.push({ queryName, request, options });
+        assert.equal(queryName, "septaris.applyDamage");
+        const message = messages.find(
+          (item) => item.uuid === request.messageUuid,
+        );
+        assert.ok(message, "Le message transmis au MJ doit exister");
+        const targetActor = game.user.targets.values().next().value?.actor;
+        assert.ok(targetActor, "Une attaque doit avoir un défenseur");
+        const damage = rendered.at(-1).data.damage;
+        targetActor.system.health.value = Math.max(
+          0,
+          targetActor.system.health.value - damage,
+        );
+        return {
+          applied: damage > 0,
+          alreadyApplied: false,
+          damage,
+          remainingHealth: targetActor.system.health.value,
+        };
+      },
+    },
+  },
 };
 globalThis.CONFIG = {
   ChatMessage: {
@@ -23,6 +52,9 @@ globalThis.CONFIG = {
 globalThis.ui = {
   notifications: {
     error(key) {
+      notifications.push(key);
+    },
+    warn(key) {
       notifications.push(key);
     },
   },
@@ -50,8 +82,12 @@ globalThis.ChatMessage = {
     data._mode = mode;
   },
   async create(data) {
-    messages.push(data);
-    return data;
+    const message = {
+      ...data,
+      uuid: `ChatMessage.test-${messages.length + 1}`,
+    };
+    messages.push(message);
+    return message;
   },
 };
 globalThis.Roll = class MockRoll {
@@ -115,7 +151,19 @@ function createCharacter(name = "PJ", weaponDamage = 0) {
     get: () => weaponDamage,
     configurable: true,
   });
-  const actor = { name, img: "pj.png", system };
+  const actor = {
+    name,
+    img: "pj.png",
+    uuid: `Actor.${name}`,
+    system,
+    async update(data) {
+      directUpdates.push({ actor: this, data });
+      if ("system.health.value" in data) {
+        this.system.health.value = data["system.health.value"];
+      }
+      return this;
+    },
+  };
   system.parent = actor;
   return { actor, system };
 }
@@ -130,18 +178,37 @@ function createNPC(name = "PNJ", defense = 12, weaponDamage = 0) {
     get: () => weaponDamage,
     configurable: true,
   });
-  const actor = { name, img: "pnj.png", system };
+  const actor = {
+    name,
+    img: "pnj.png",
+    uuid: `Actor.${name}`,
+    system,
+    async update(data) {
+      directUpdates.push({ actor: this, data });
+      if ("system.health.value" in data) {
+        this.system.health.value = data["system.health.value"];
+      }
+      return this;
+    },
+  };
   system.parent = actor;
   return { actor, system };
 }
 
 function prepare({ targets = [], totals = [], response = options() } = {}) {
-  game.user.targets = new Set(targets.map((actor) => ({ actor })));
+  game.user.targets = new Set(
+    targets.map((actor) => ({
+      actor,
+      document: { uuid: `Scene.test.Token.${actor.name}` },
+    })),
+  );
   dice.splice(0, dice.length, ...totals);
   messages.length = 0;
   rendered.length = 0;
   evaluated.length = 0;
   notifications.length = 0;
+  remoteRequests.length = 0;
+  directUpdates.length = 0;
   dialogResult = response;
 }
 
@@ -222,15 +289,49 @@ describe("Étape 2.2 — dégâts dans les jets Foundry", () => {
     assert.equal(card().rollType, "default");
     assert.equal(card().damage, 0);
     assert.equal(notifications.length, 0);
+    assert.equal(remoteRequests.length, 0);
+    assert.equal(directUpdates.length, 0);
   });
 
-  it("ne modifie pas les PV du défenseur", async () => {
+  it("applique les dégâts exactement une fois par la requête au MJ", async () => {
     const pj = createCharacter("Guerrier", 3);
     const defender = createNPC("Cible", 12);
-    const healthBefore = structuredClone(defender.system.health);
     prepare({ targets: [defender.actor], totals: [18, 2] });
     await roll(pj.system, true, "attack");
     assert.equal(card().damage, 9);
-    assert.deepEqual(defender.system.health, healthBefore);
+    assert.equal(defender.system.health.value, 1);
+    assert.equal(remoteRequests.length, 1);
+    assert.equal(
+      directUpdates.length,
+      0,
+      "Pas de mise à jour directe côté joueur",
+    );
+    assert.equal(remoteRequests[0].request.messageUuid, messages[0].uuid);
+    assert.equal(
+      messages[0].flags.septaris.attack.targetTokenUuid,
+      "Scene.test.Token.Cible",
+    );
+  });
+
+  it("une attaque qui manque ne modifie pas les PV et n'envoie aucune requête", async () => {
+    const pj = createCharacter("Guerrier", 3);
+    const defender = createNPC("Cible", 12);
+    prepare({ targets: [defender.actor], totals: [9, 2] });
+    await roll(pj.system, true, "attack");
+    assert.equal(card().damage, 0);
+    assert.equal(defender.system.health.value, 10);
+    assert.equal(remoteRequests.length, 0);
+    assert.equal(directUpdates.length, 0);
+  });
+
+  it("une attaque avec zéro dégât n'envoie pas de requête", async () => {
+    const pj = createCharacter("Guerrier", 0);
+    const defender = createNPC("Cible", 12);
+    prepare({ targets: [defender.actor], totals: [12, 1] });
+    await roll(pj.system, true, "attack");
+    assert.equal(card().damage, 0);
+    assert.equal(defender.system.health.value, 10);
+    assert.equal(remoteRequests.length, 0);
+    assert.equal(directUpdates.length, 0);
   });
 });

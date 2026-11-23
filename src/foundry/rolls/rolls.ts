@@ -131,7 +131,6 @@ export const roll = async (
       throw new Error(`Septaris | Unvailable target`);
     }
     damage = calculateDamage(result.finalMargin, character.weaponDamage);
-    await system.takeDamage(damage);
   }
 
   const templateData = {
@@ -204,22 +203,24 @@ export const roll = async (
 
   const message = await ChatMessage.create(chatData);
 
-  try {
-    if (!message?.uuid) {
-      throw new Error("SEPTARIS | Message d'attaque non enregistré");
+  if (type === "attack" && damage > 0) {
+    try {
+      if (!message?.uuid) {
+        throw new Error("SEPTARIS | Message d'attaque non enregistré");
+      }
+
+      const application = await requestDamageApplication(message.uuid);
+
+      if (!application.applied && !application.alreadyApplied) {
+        ui.notifications.warn("SEPTARIS | Aucun dégât appliqué à la cible.");
+      }
+    } catch (error) {
+      console.error("SEPTARIS | Erreur d'application des dégâts :", error);
+
+      ui.notifications.error(
+        "SEPTARIS | Impossible d'appliquer les dégâts automatiquement.",
+      );
     }
-
-    const application = await requestDamageApplication(message.uuid);
-
-    if (!application.applied && !application.alreadyApplied) {
-      ui.notifications.warn("SEPTARIS | Aucun dégât appliqué à la cible.");
-    }
-  } catch (error) {
-    console.error("SEPTARIS | Erreur d'application des dégâts :", error);
-
-    ui.notifications.error(
-      "SEPTARIS | Impossible d'appliquer les dégâts automatiquement.",
-    );
   }
 
   return {

@@ -8,12 +8,41 @@ const renderedTemplates = [];
 const evaluatedRolls = [];
 const openedDialogs = [];
 const queuedTotals = [];
+const remoteRequests = [];
+const directUpdates = [];
 let dialogResult;
 
 globalThis.game = {
   user: { id: "test-user", targets: new Set() },
   i18n: { localize: (key) => key },
   settings: { get: () => "public" },
+  users: {
+    activeGM: {
+      id: "gm-test",
+      active: true,
+      async query(queryName, request, options) {
+        remoteRequests.push({ queryName, request, options });
+        const message = chatMessages.find(
+          (item) => item.uuid === request.messageUuid,
+        );
+        assert.ok(message, "Le message transmis au MJ doit exister");
+        assert.equal(queryName, "septaris.applyDamage");
+        const targetActor = game.user.targets.values().next().value?.actor;
+        assert.ok(targetActor, "Le MJ doit pouvoir retrouver le défenseur");
+        const damage = renderedTemplates.at(-1).data.damage;
+        targetActor.system.health.value = Math.max(
+          0,
+          targetActor.system.health.value - damage,
+        );
+        return {
+          applied: damage > 0,
+          alreadyApplied: false,
+          damage,
+          remainingHealth: targetActor.system.health.value,
+        };
+      },
+    },
+  },
 };
 
 globalThis.CONFIG = {
@@ -25,6 +54,9 @@ globalThis.CONFIG = {
 globalThis.ui = {
   notifications: {
     error(key, options) {
+      notifications.push({ key, options });
+    },
+    warn(key, options) {
       notifications.push({ key, options });
     },
   },
@@ -55,8 +87,12 @@ globalThis.ChatMessage = {
     data._testMessageMode = mode;
   },
   async create(data) {
-    chatMessages.push(data);
-    return data;
+    const message = {
+      ...data,
+      uuid: `ChatMessage.test-${chatMessages.length + 1}`,
+    };
+    chatMessages.push(message);
+    return message;
   },
 };
 
@@ -121,7 +157,19 @@ function createPJ(name = "Aventurier", stats = {}) {
   system.skills = { handtohand: 2, addressing: 1 };
   system.featDice = 10;
   system.health = { value: 15, max: 15 };
-  const actor = { name, img: `${name}.png`, system };
+  const actor = {
+    name,
+    img: `${name}.png`,
+    uuid: `Actor.${name}`,
+    system,
+    async update(data) {
+      directUpdates.push({ actor: this, data });
+      if ("system.health.value" in data) {
+        this.system.health.value = data["system.health.value"];
+      }
+      return this;
+    },
+  };
   system.parent = actor;
   return { actor, system };
 }
@@ -132,13 +180,29 @@ function createPNJ(name = "Gobelin", defense = 14) {
   system.characteristicsModifiers = { strength: 1, dexterity: 0 };
   system.skills = { handtohand: 1, addressing: 1 };
   system.health = { value: 10, max: 10 };
-  const actor = { name, img: `${name}.png`, system };
+  const actor = {
+    name,
+    img: `${name}.png`,
+    uuid: `Actor.${name}`,
+    system,
+    async update(data) {
+      directUpdates.push({ actor: this, data });
+      if ("system.health.value" in data) {
+        this.system.health.value = data["system.health.value"];
+      }
+      return this;
+    },
+  };
   system.parent = actor;
   return { actor, system };
 }
 
 function target(actor) {
-  return { id: `token-${actor?.name ?? "empty"}`, actor };
+  return {
+    id: `token-${actor?.name ?? "empty"}`,
+    actor,
+    document: { uuid: `Scene.test.Token.${actor?.name ?? "empty"}` },
+  };
 }
 
 function prepare({ targets = [], totals = [], response = options() } = {}) {
@@ -149,6 +213,8 @@ function prepare({ targets = [], totals = [], response = options() } = {}) {
   renderedTemplates.length = 0;
   evaluatedRolls.length = 0;
   openedDialogs.length = 0;
+  remoteRequests.length = 0;
+  directUpdates.length = 0;
   dialogResult = response;
 }
 
@@ -250,13 +316,30 @@ describe("Étape 2.1 — Défense, résultats et carte de chat", () => {
     assert.equal(displayed().modeLabel, "advantage");
   });
 
-  it("les attaques ne modifient pas les PV de la cible", async () => {
+  it("une attaque réussie demande au MJ d'appliquer les dégâts une seule fois", async () => {
     const defender = createPNJ("Cible", 12);
-    const before = structuredClone(defender.system.health);
     prepare({ targets: [target(defender.actor)], totals: [18] });
     await roll(createPJ().system, false, "attack");
-    displayed();
-    assert.deepEqual(defender.system.health, before);
+    assert.equal(displayed().damage, 6);
+    assert.equal(defender.system.health.value, 4);
+    assert.equal(remoteRequests.length, 1);
+    assert.equal(
+      directUpdates.length,
+      0,
+      "Pas d'Actor.update depuis le client joueur",
+    );
+    assert.equal(chatMessages[0].flags.septaris.attack.kind, "attack");
+    assert.equal(remoteRequests[0].request.messageUuid, chatMessages[0].uuid);
+  });
+
+  it("une attaque échouée laisse les PV intacts sans requête réseau", async () => {
+    const defender = createPNJ("Cible", 12);
+    prepare({ targets: [target(defender.actor)], totals: [10] });
+    await roll(createPJ().system, false, "attack");
+    assert.equal(displayed().damage, 0);
+    assert.equal(defender.system.health.value, 10);
+    assert.equal(remoteRequests.length, 0);
+    assert.equal(directUpdates.length, 0);
   });
 });
 
@@ -313,5 +396,12 @@ describe("Étape 2.1 — non-régression du jet générique", () => {
     assert.equal(card.defender, "");
     assert.equal(card.marginLabel, -4);
     assert.equal(notifications.length, 0);
+    assert.equal(
+      remoteRequests.length,
+      0,
+      "Aucun appel au MJ pour un test générique",
+    );
+    assert.equal(directUpdates.length, 0);
+    assert.deepEqual(chatMessages[0].flags, {});
   });
 });
