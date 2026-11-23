@@ -1,13 +1,13 @@
 import type { Token } from "@client/canvas/placeables/_module.mjs";
 import { CharacterData } from "../../data/actor/character.js";
 import { NPCData } from "../../data/actor/npc.js";
+import { calculateDamage } from "../../rules/conflit/damage.js";
 import { calculateCharacteristicSkillBonus } from "../../rules/resolution/modifiers.js";
 import { resolveAction } from "../../rules/resolution/resolution.js";
 import {
   type RollDialogResult,
   SeptarisRollDialog,
 } from "../../sheets/dialogs/roll-dialog.js";
-import { calculateDamage } from "../combat/damage.js";
 import { getRollMessageModeLabel } from "./chat-message-modes.js";
 import { buildFormula } from "./roll-formula.js";
 
@@ -118,8 +118,8 @@ export const roll = async (
 
   let damage: number = 0;
 
-  if (type === "attack" && result.margin >= 0) {
-    damage = calculateDamage(result.margin, character.weaponDamage);
+  if (type === "attack" && result.finalMargin >= 0) {
+    damage = calculateDamage(result.finalMargin, character.weaponDamage);
     console.log(`SEPTARIS | damage : ${damage}`);
   }
 
