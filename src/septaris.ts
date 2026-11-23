@@ -9,12 +9,14 @@ import {
 import { SYSTEM_ID } from "./foundry/constants.js";
 import { registerHandlebarsHelpers } from "./foundry/handlebars.js";
 import { localizeLabel } from "./foundry/localisation.js";
+import { registerDamageRequests } from "./foundry/network/damage-requests.js";
 import { SeptarisCharacterSheet } from "./sheets/character-sheet.js";
 import { SeptarisCombatTracker } from "./sheets/combat-tracker.js";
 import { SeptarisConflitSetupDialog } from "./sheets/dialogs/conflit-setup-dialog.js";
 import { SeptarisNPCSheet } from "./sheets/npc-sheet.js";
 
 Hooks.once("init", () => {
+  registerDamageRequests();
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Actor.dataModels.npc = NPCData;
 

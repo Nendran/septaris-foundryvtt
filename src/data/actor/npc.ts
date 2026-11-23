@@ -57,6 +57,13 @@ export class NPCData extends foundry.abstract.TypeDataModel<
     return 0;
   }
 
+  async takeDamage(damage: number) {
+    const newHealth = this.health.value - damage;
+    await this.parent.update({
+      "system.health.value": Math.max(0, newHealth),
+    });
+  }
+
   /** @inheritDoc */
   override prepareDerivedData(): void {
     super.prepareDerivedData();

@@ -33,6 +33,8 @@ interface SeptarisConfig {
       >
     ) => foundry.applications.sidebar.tabs.CombatTracker;
   };
+
+  queries: { [key: string]: Promise<T> };
 }
 
 declare global {

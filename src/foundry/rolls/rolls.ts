@@ -8,6 +8,7 @@ import {
   type RollDialogResult,
   SeptarisRollDialog,
 } from "../../sheets/dialogs/roll-dialog.js";
+import { requestDamageApplication } from "../network/damage-requests.js";
 import { getRollMessageModeLabel } from "./chat-message-modes.js";
 import { buildFormula } from "./roll-formula.js";
 
@@ -119,7 +120,18 @@ export const roll = async (
   let damage: number = 0;
 
   if (type === "attack" && result.finalMargin >= 0) {
+    const defender = targets[0].actor;
+    const system = defender?.system;
+
+    if (
+      defender === null ||
+      system === null ||
+      !(system instanceof CharacterData || system instanceof NPCData)
+    ) {
+      throw new Error(`Septaris | Unvailable target`);
+    }
     damage = calculateDamage(result.finalMargin, character.weaponDamage);
+    await system.takeDamage(damage);
   }
 
   const templateData = {
@@ -174,11 +186,41 @@ export const roll = async (
     content,
     rolls,
     style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    flags:
+      type === "attack" && targets[0]?.document
+        ? {
+            septaris: {
+              attack: {
+                kind: "attack",
+                attackerUuid: character.parent.uuid,
+                targetTokenUuid: targets[0].document.uuid,
+              },
+            },
+          }
+        : {},
   };
 
   ChatMessage.applyMode(chatData, messageMode);
 
-  await ChatMessage.create(chatData);
+  const message = await ChatMessage.create(chatData);
+
+  try {
+    if (!message?.uuid) {
+      throw new Error("SEPTARIS | Message d'attaque non enregistré");
+    }
+
+    const application = await requestDamageApplication(message.uuid);
+
+    if (!application.applied && !application.alreadyApplied) {
+      ui.notifications.warn("SEPTARIS | Aucun dégât appliqué à la cible.");
+    }
+  } catch (error) {
+    console.error("SEPTARIS | Erreur d'application des dégâts :", error);
+
+    ui.notifications.error(
+      "SEPTARIS | Impossible d'appliquer les dégâts automatiquement.",
+    );
+  }
 
   return {
     roll,
