@@ -81,9 +81,7 @@ const { SeptarisRollDialog } = await import(
 );
 const { roll } = await import("../scripts/foundry/rolls/rolls.js");
 
-SeptarisRollDialog.prototype.waitForResult = async function () {
-  return dialogResult;
-};
+SeptarisRollDialog.prototype.waitForResult = async () => dialogResult;
 
 function options(overrides = {}) {
   return {
@@ -105,7 +103,11 @@ function createCharacter(name = "PJ", weaponDamage = 0) {
     dexterity: 14,
     constitution: 12,
   };
-  system.characteristicsModifiers = { strength: 2, dexterity: 2, constitution: 1 };
+  system.characteristicsModifiers = {
+    strength: 2,
+    dexterity: 2,
+    constitution: 1,
+  };
   system.skills = { handtohand: 2 };
   system.featDice = 10;
   system.health = { value: 15, max: 15 };
